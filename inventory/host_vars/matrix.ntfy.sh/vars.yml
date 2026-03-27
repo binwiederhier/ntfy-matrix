@@ -1,0 +1,41 @@
+---
+# Hi Phil. Please refer to NTFY-README.md.
+
+matrix_domain: matrix.ntfy.sh
+matrix_server_fqn_matrix: matrix.ntfy.sh
+matrix_homeserver_implementation: synapse
+
+# See https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/CHANGELOG.md
+matrix_playbook_migration_validated_version: v2026.03.23.0
+
+matrix_homeserver_generic_secret_key: "{{ vault_matrix_homeserver_generic_secret_key }}"
+matrix_playbook_reverse_proxy_type: playbook-managed-traefik
+devture_systemd_docker_base_ipv6_enabled: true
+postgres_connection_password: "{{ vault_postgres_connection_password }}"
+matrix_client_element_enabled: false
+
+# Purge media after 14 days
+matrix_synapse_configuration_extension_yaml: |
+  media_retention:
+    local_media_lifetime: 14d
+    remote_media_lifetime: 14d
+
+# Set up Bridge user
+matrix_user_creator_users_additional:
+  - username: 'bridge'
+    initial_password: "{{ vault_bridge_initial_password }}"
+    initial_type: 'user'
+
+# Set up Discord Bridge
+matrix_mautrix_discord_enabled: true
+matrix_mautrix_discord_federate_rooms: false
+matrix_mautrix_discord_bridge_permissions:
+  '*': relay
+  '@bridge:matrix.ntfy.sh': admin
+  '@wunter8:wunter8.dev': admin
+  '@binwiederhier:matrix.org': admin
+
+matrix_static_files_container_labels_base_domain_enabled: true
+exim_relay_enabled: false
+coturn_enabled: false
+devture_systemd_service_manager_up_verification_delay_seconds: 40

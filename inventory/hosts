@@ -1,0 +1,2 @@
+[matrix_servers]
+matrix.ntfy.sh ansible_host=129.212.147.37 ansible_port=22 ansible_ssh_user=root
