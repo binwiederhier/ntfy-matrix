@@ -85,11 +85,9 @@
   when: "not matrix_static_files_file_matrix_support_enabled | bool"
 
 - name: Ensure matrix-static-files container image is pulled
-  community.docker.docker_image:
+  community.docker.docker_image_pull:
     name: "{{ matrix_static_files_container_image }}"
-    source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
-    force_source: "{{ matrix_static_files_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
-    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else matrix_static_files_container_image_force_pull }}"
+    pull: always
   register: matrix_static_files_container_image_pull_result
   retries: "{{ devture_playbook_help_container_retries_count }}"
   delay: "{{ devture_playbook_help_container_retries_delay }}"

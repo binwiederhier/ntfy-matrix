@@ -31,7 +31,6 @@ matrix_element_admin_container_src_path: "{{ matrix_element_admin_base_path }}/c
 
 matrix_element_admin_container_image: "{{ matrix_element_admin_container_image_registry_prefix }}element-admin:{{ matrix_element_admin_container_image_tag }}"
 matrix_element_admin_container_image_tag: "{{ matrix_element_admin_version }}"
-matrix_element_admin_container_image_force_pull: "{{ matrix_element_admin_container_image.endswith(':main') }}"
 matrix_element_admin_container_image_registry_prefix: "{{ matrix_element_admin_container_image_registry_prefix_upstream }}"
 matrix_element_admin_container_image_registry_prefix_upstream: "{{ matrix_element_admin_container_image_registry_prefix_upstream_default }}"
 matrix_element_admin_container_image_registry_prefix_upstream_default: "oci.element.io/"

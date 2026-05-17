@@ -35,16 +35,12 @@
   register: matrix_matrixto_git_pull_results
 
 - name: Ensure Matrix.to container image is built
-  community.docker.docker_image:
+  community.docker.docker_image_build:
     name: "{{ matrix_matrixto_container_image_self_build_name }}"
-    source: build
-    force_source: "{{ matrix_matrixto_git_pull_results.changed if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
-    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else matrix_matrixto_git_pull_results.changed }}"
-    build:
-      dockerfile: Dockerfile
-      path: "{{ matrix_matrixto_container_image_self_build_src_files_path }}"
-      pull: true
-      args:
+    dockerfile: Dockerfile
+    path: "{{ matrix_matrixto_container_image_self_build_src_files_path }}"
+    pull: true
+    rebuild: "{{ 'always' if matrix_matrixto_git_pull_results.changed | bool else 'never' }}"
   register: matrix_matrixto_container_image_build_result
 
 - name: Ensure Matrix.to container network is created via community.docker.docker_network

@@ -21,7 +21,7 @@ matrix_element_call_enabled: false
 matrix_rtc_enabled: "{{ matrix_element_call_enabled }}"
 
 # renovate: datasource=docker depName=ghcr.io/element-hq/element-call
-matrix_element_call_version: v0.18.0
+matrix_element_call_version: v0.19.3
 
 matrix_element_call_scheme: https
 
@@ -39,7 +39,6 @@ matrix_element_call_container_image_registry_prefix: "{{ matrix_element_call_con
 matrix_element_call_container_image_registry_prefix_upstream: "{{ matrix_element_call_container_image_registry_prefix_upstream_default }}"
 matrix_element_call_container_image_registry_prefix_upstream_default: ghcr.io/
 matrix_element_call_container_image_tag: "{{ matrix_element_call_version }}"
-matrix_element_call_container_image_force_pull: "{{ matrix_element_call_container_image.endswith(':latest') }}"
 
 matrix_element_call_container_network: matrix-element-call
 

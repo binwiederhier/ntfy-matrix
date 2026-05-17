@@ -30,7 +30,6 @@ matrix_dendrite_container_image_registry_prefix_upstream: "{{ matrix_dendrite_co
 matrix_dendrite_container_image_registry_prefix_upstream_default: docker.io/
 # renovate: datasource=docker depName=matrixdotorg/dendrite-monolith
 matrix_dendrite_container_image_tag: "v0.15.2"
-matrix_dendrite_container_image_force_pull: "{{ matrix_dendrite_container_image.endswith(':latest') }}"
 
 matrix_dendrite_base_path: "{{ matrix_base_data_path }}/dendrite"
 matrix_dendrite_config_dir_path: "{{ matrix_dendrite_base_path }}/config"

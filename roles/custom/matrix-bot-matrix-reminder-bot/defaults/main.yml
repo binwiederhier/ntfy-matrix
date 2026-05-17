@@ -25,7 +25,6 @@ matrix_bot_matrix_reminder_bot_container_image: "{{ matrix_bot_matrix_reminder_b
 matrix_bot_matrix_reminder_bot_container_image_registry_prefix: "{{ 'localhost/' if matrix_bot_matrix_reminder_bot_container_image_self_build else matrix_bot_matrix_reminder_bot_container_image_registry_prefix_upstream }}"
 matrix_bot_matrix_reminder_bot_container_image_registry_prefix_upstream: "{{ matrix_bot_matrix_reminder_bot_container_image_registry_prefix_upstream_default }}"
 matrix_bot_matrix_reminder_bot_container_image_registry_prefix_upstream_default: "ghcr.io/"
-matrix_bot_matrix_reminder_bot_container_image_force_pull: "{{ matrix_bot_matrix_reminder_bot_container_image.endswith(':latest') }}"
 
 matrix_bot_matrix_reminder_bot_base_path: "{{ matrix_base_data_path }}/matrix-reminder-bot"
 matrix_bot_matrix_reminder_bot_config_path: "{{ matrix_bot_matrix_reminder_bot_base_path }}/config"
@@ -72,12 +71,10 @@ matrix_bot_matrix_reminder_bot_database_name: 'matrix_reminder_bot'
 
 matrix_bot_matrix_reminder_bot_database_connection_string: 'postgres://{{ matrix_bot_matrix_reminder_bot_database_username }}:{{ matrix_bot_matrix_reminder_bot_database_password }}@{{ matrix_bot_matrix_reminder_bot_database_hostname }}:{{ matrix_bot_matrix_reminder_bot_database_port }}/{{ matrix_bot_matrix_reminder_bot_database_name }}'
 
-matrix_bot_matrix_reminder_bot_storage_database: "{{
-	{
-		'sqlite': ('sqlite://' + matrix_bot_matrix_reminder_bot_sqlite_database_path_in_container),
-		'postgres': matrix_bot_matrix_reminder_bot_database_connection_string,
-	}[matrix_bot_matrix_reminder_bot_database_engine]
-}}"
+matrix_bot_matrix_reminder_bot_storage_database: "{{ {
+    'sqlite': ('sqlite://' + matrix_bot_matrix_reminder_bot_sqlite_database_path_in_container),
+    'postgres': matrix_bot_matrix_reminder_bot_database_connection_string,
+}[matrix_bot_matrix_reminder_bot_database_engine] }}"
 
 
 # The bot's username. This user needs to be created manually beforehand.

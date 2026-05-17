@@ -67,11 +67,9 @@
       when: "matrix_synapse_git_pull_results.changed | bool or matrix_synapse_container_image_check_result.stdout == ''"
 
 - name: Ensure Synapse Docker image is pulled
-  community.docker.docker_image:
+  community.docker.docker_image_pull:
     name: "{{ matrix_synapse_container_image }}"
-    source: "{{ 'pull' if ansible_version.major > 2 or ansible_version.minor > 7 else omit }}"
-    force_source: "{{ matrix_synapse_container_image_force_pull if ansible_version.major > 2 or ansible_version.minor >= 8 else omit }}"
-    force: "{{ omit if ansible_version.major > 2 or ansible_version.minor >= 8 else matrix_synapse_container_image_force_pull }}"
+    pull: always
   when: "not matrix_synapse_container_image_self_build"
   register: result
   retries: "{{ devture_playbook_help_container_retries_count }}"
@@ -90,14 +88,14 @@
       register: matrix_synapse_container_image_customizations_dockerfile_result
 
     - name: Ensure customized Docker image for Synapse is built
-      community.docker.docker_image:
+      community.docker.docker_image_build:
         name: "{{ matrix_synapse_container_image_customized }}"
-        source: build
-        force_source: "{{ matrix_synapse_container_image_customizations_dockerfile_result.changed or matrix_synapse_container_image_customized_force_source }}"
-        build:
-          dockerfile: Dockerfile
-          path: "{{ matrix_synapse_customized_container_src_files_path }}"
-          nocache: "{{ matrix_synapse_container_image_customized_build_nocache }}"
+        dockerfile: Dockerfile
+        path: "{{ matrix_synapse_customized_container_src_files_path }}"
+        pull: false
+        nocache: "{{ matrix_synapse_container_image_customized_build_nocache }}"
+        rebuild: "{{ 'always' if (matrix_synapse_container_image_customizations_dockerfile_result.changed | bool or matrix_synapse_container_image_customized_force_source | bool) else 'never' }}"
+      register: matrix_synapse_container_image_customized_build_result
 
 # We do this so that the signing key would get generated.
 #

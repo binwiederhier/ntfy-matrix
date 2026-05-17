@@ -1,6 +1,6 @@
 <!--
 SPDX-FileCopyrightText: 2019 Eduardo Beltrame
-SPDX-FileCopyrightText: 2019-2025 Slavi Pantaleev
+SPDX-FileCopyrightText: 2019-2026 Slavi Pantaleev
 SPDX-FileCopyrightText: 2020 Tulir Asokan
 SPDX-FileCopyrightText: 2021, 2024 MDAD project contributors
 SPDX-FileCopyrightText: 2022 Dennis Ciba
@@ -29,13 +29,17 @@ To uninstall the service, run the command below on the server:
 systemctl disable --now matrix-conduwuit.service
 ```
 
+## Migrating to Tuwunel
+
+[Tuwunel](configuring-playbook-tuwunel.md) is a fork of conduwuit, [endorsed as conduwuit's successor](https://github.com/spantaleev/matrix-docker-ansible-deploy/pull/5200#issuecomment-4396211185) by the former conduwuit maintainer. It reads conduwuit's database directly, so migration is possible. Please refer to [this section](./configuring-playbook-tuwunel.md#migrating-from-conduwuit) for details.
+
 ## Migrating to Continuwuity
 
 Since [Continuwuity](configuring-playbook-continuwuity.md) is a drop-in replacement for conduwuit, migration is possible. Please refer to [this section](./configuring-playbook-continuwuity.md#migrating-from-conduwuit) for details.
 
 ## Removing data manually
 
-If you are not going to migrate to [Continuwuity](configuring-playbook-continuwuity.md), you can remove data by running the command on the server:
+If you are not going to migrate to [Tuwunel](configuring-playbook-tuwunel.md) or [Continuwuity](configuring-playbook-continuwuity.md), you can remove data by running the command on the server:
 
 ```sh
 rm -rf /matrix/conduwuit

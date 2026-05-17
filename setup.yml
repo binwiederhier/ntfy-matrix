@@ -78,6 +78,7 @@
     - custom/matrix-bridge-steam
     - custom/matrix-bridge-heisenbridge
     - custom/matrix-bridge-hookshot
+    - custom/matrix-bridge-meshtastic-relay
     - custom/matrix-bot-matrix-reminder-bot
     - custom/matrix-bot-matrix-registration-bot
     - custom/matrix-bot-maubot
@@ -96,7 +97,8 @@
     - custom/matrix-dendrite
     - custom/matrix-conduit
     - custom/matrix-continuwuity
-    - custom/matrix-synapse-admin
+    - custom/matrix-tuwunel
+    - custom/matrix-ketesa
     - custom/matrix-synapse-usage-exporter
     - galaxy/prometheus_nginxlog_exporter
     - galaxy/prometheus_node_exporter

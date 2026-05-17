@@ -13,11 +13,10 @@ matrix_continuwuity_enabled: true
 matrix_continuwuity_hostname: ''
 
 # renovate: datasource=docker depName=forgejo.ellis.link/continuwuation/continuwuity
-matrix_continuwuity_version: v0.5.6
+matrix_continuwuity_version: v0.5.9
 
 matrix_continuwuity_container_image: "{{ matrix_continuwuity_container_image_registry_prefix }}/continuwuation/continuwuity:{{ matrix_continuwuity_container_image_tag }}"
 matrix_continuwuity_container_image_tag: "{{ matrix_continuwuity_version }}"
-matrix_continuwuity_container_image_force_pull: "{{ matrix_continuwuity_container_image.endswith(':latest') }}"
 matrix_continuwuity_container_image_registry_prefix: "{{ matrix_continuwuity_container_image_registry_prefix_upstream }}"
 matrix_continuwuity_container_image_registry_prefix_upstream: "{{ matrix_continuwuity_container_image_registry_prefix_upstream_default }}"
 matrix_continuwuity_container_image_registry_prefix_upstream_default: forgejo.ellis.link
@@ -37,7 +36,10 @@ matrix_continuwuity_systemd_required_services_list_auto: []
 matrix_continuwuity_systemd_required_services_list_custom: []
 
 # List of systemd services that matrix-continuwuity.service wants
-matrix_continuwuity_systemd_wanted_services_list: []
+matrix_continuwuity_systemd_wanted_services_list: "{{ matrix_continuwuity_systemd_wanted_services_list_default + matrix_continuwuity_systemd_wanted_services_list_auto + matrix_continuwuity_systemd_wanted_services_list_custom }}"
+matrix_continuwuity_systemd_wanted_services_list_default: []
+matrix_continuwuity_systemd_wanted_services_list_auto: []
+matrix_continuwuity_systemd_wanted_services_list_custom: []
 
 # Controls how long to sleep for after starting the matrix-synapse container.
 #
@@ -165,8 +167,8 @@ matrix_continuwuity_config_registration_token: ''
 # Upstream defaults this to "🏳️‍⚧️", but we keep this consistent across all homeserver implementations and do not enable a suffix.
 matrix_continuwuity_config_new_user_displayname_suffix: ""
 
-# Controls the `allow_check_for_updates` setting.
-matrix_continuwuity_config_allow_check_for_updates: false
+# Controls the `allow_announcements_check` setting.
+matrix_continuwuity_config_allow_announcements_check: true
 
 # Controls the `emergency_password` setting.
 matrix_continuwuity_config_emergency_password: ''
@@ -188,6 +190,33 @@ matrix_continuwuity_config_turn_password: ''
 # Controls whether the self-check feature should validate SSL certificates.
 matrix_continuwuity_self_check_validate_certificates: true
 
+# If set, registration will require Google ReCAPTCHA verification.
+matrix_continuwuity_config_recaptcha_site_key: ''
+matrix_continuwuity_config_recaptcha_private_site_key: ''
+
+# Controls whether encrypted rooms and events are allowed.
+matrix_continuwuity_config_allow_encryption: true
+
+# Controls whether standard users can create new rooms.
+# Appservices and admins are always allowed to create new rooms.
+matrix_continuwuity_config_allow_room_creation: true
+
+# Controls the default room version continuwuity will create rooms with.
+# Per spec, room version '12' is the default (According to spec release 1.18).
+matrix_continuwuity_config_default_room_version: '12'
+
+# List/vector of room IDs or room aliases that continuwuity will make
+# newly registered users join. The rooms specified must be rooms that you
+# have joined at least once on the server, and must be public.
+#
+# example: ["#continuwuity:continuwuity.org",
+# "!main-1:continuwuity.org"]
+#
+matrix_continuwuity_config_auto_join_rooms: []
+
+# Forces users to always forget rooms they have left (MSC4267).
+matrix_continuwuity_config_forget_forced_upon_leave: false
+
 # Controls server (de)federation settings.
 matrix_continuwuity_config_allow_federation: true
 matrix_continuwuity_config_allowed_remote_server_names: []
@@ -196,8 +225,63 @@ matrix_continuwuity_config_forbidden_remote_room_directory_server_names: []
 matrix_continuwuity_config_prevent_media_downloads_from: []
 matrix_continuwuity_config_ignore_messages_from_server_names: []
 
+# Allow outgoing presence updates/requests.
+#
+# Note that outgoing presence is very heavy on the CPU and network, and
+# will typically cause extreme strain and slowdowns for no real benefit.
+# There are only a few clients that even implement presence, so you
+# probably don't want to enable this.
+matrix_continuwuity_config_allow_outgoing_presence: false
+
+# Controls MatrixRTC foci served via `/_matrix/client/v1/rtc/transports`
+# and `/_matrix/client/unstable/org.matrix.msc4143/rtc/transports` (MSC4143)
+matrix_continuwuity_config_rtc_foci: "{{ matrix_continuwuity_config_rtc_foci_auto + matrix_continuwuity_config_rtc_foci_custom }}"
+matrix_continuwuity_config_rtc_foci_auto: |-
+  {{
+    (
+      [{'type': 'livekit', 'livekit_service_url': matrix_continuwuity_config_rtc_foci_livekit_url}] if matrix_continuwuity_config_rtc_foci_livekit_url != '' else []
+    )
+  }}
+matrix_continuwuity_config_rtc_foci_custom: []
+
+# Controls MatrixRTC Livekit URL auto-added to `matrix_continuwuity_config_rtc_foci`.
+#
+# This is set automatically if you are using the playbook MatrixRTC stack.
+matrix_continuwuity_config_rtc_foci_livekit_url: ''
+
 # Controls the `url_preview_domain_contains_allowlist` setting.
 matrix_continuwuity_config_url_preview_domain_contains_allowlist: []
+
+# Controls the `url_preview_domain_explicit_allowlist` setting.
+matrix_continuwuity_config_url_preview_domain_explicit_allowlist: []
+
+# Controls the `url_preview_check_root_domain` setting.
+matrix_continuwuity_config_url_preview_check_root_domain: false
+
+# Controls the value of `global.well_known.client`.
+matrix_continuwuity_config_well_known_client: ''
+
+# Controls whether SMTP features will be enabled
+# (such as setting the server's SMTP connection URL,
+#  enabling self-service password resets via email,
+#  requiring email for registration, etc.)
+matrix_continuwuity_config_smtp_enabled: false
+
+# Controls the value of `global.smtp.connection_uri` (if any).
+# Must be set to a non-empty value
+# together with `matrix_continuwuity_config_smtp_sender` to have effect.
+matrix_continuwuity_config_smtp_connection_uri: ''
+
+# Controls the value of `global.smtp.sender` (if any).
+# Must be set to a non-empty value
+# together with `matrix_continuwuity_config_smtp_connection_uri` to have effect.
+matrix_continuwuity_config_smtp_sender: ''
+
+# Controls the `global.smtp.require_email_for_registration` setting.
+matrix_continuwuity_config_smtp_require_email_for_registration: false
+
+# Controls the `global.smtp.require_email_for_token_registration ` setting.
+matrix_continuwuity_config_smtp_require_email_for_token_registration: false
 
 # Additional environment variables to pass to the container.
 #

@@ -20,7 +20,6 @@ matrix_mautrix_bluesky_container_image: "{{ matrix_mautrix_bluesky_container_ima
 matrix_mautrix_bluesky_container_image_registry_prefix: "{{ 'localhost/' if matrix_mautrix_bluesky_container_image_self_build else matrix_mautrix_bluesky_container_image_registry_prefix_upstream }}"
 matrix_mautrix_bluesky_container_image_registry_prefix_upstream: "{{ matrix_mautrix_bluesky_container_image_registry_prefix_upstream_default }}"
 matrix_mautrix_bluesky_container_image_registry_prefix_upstream_default: "dock.mau.dev/"
-matrix_mautrix_bluesky_container_image_force_pull: "{{ matrix_mautrix_bluesky_container_image.endswith(':latest') }}"
 
 matrix_mautrix_bluesky_base_path: "{{ matrix_base_data_path }}/mautrix-bluesky"
 matrix_mautrix_bluesky_config_path: "{{ matrix_mautrix_bluesky_base_path }}/config"
@@ -122,11 +121,9 @@ matrix_mautrix_bluesky_database_sslmode: disable
 
 matrix_mautrix_bluesky_database_connection_string: 'postgres://{{ matrix_mautrix_bluesky_database_username }}:{{ matrix_mautrix_bluesky_database_password }}@{{ matrix_mautrix_bluesky_database_hostname }}:{{ matrix_mautrix_bluesky_database_port }}/{{ matrix_mautrix_bluesky_database_name }}?sslmode={{ matrix_mautrix_bluesky_database_sslmode }}'
 
-matrix_mautrix_bluesky_database_uri: "{{
-	{
-		'postgres': matrix_mautrix_bluesky_database_connection_string,
-	}[matrix_mautrix_bluesky_database_engine]
-}}"
+matrix_mautrix_bluesky_database_uri: "{{ {
+    'postgres': matrix_mautrix_bluesky_database_connection_string,
+}[matrix_mautrix_bluesky_database_engine] }}"
 
 matrix_mautrix_bluesky_double_puppet_secrets: "{{ matrix_mautrix_bluesky_double_puppet_secrets_auto | combine(matrix_mautrix_bluesky_double_puppet_secrets_custom) }}"
 matrix_mautrix_bluesky_double_puppet_secrets_auto: {}

@@ -11,23 +11,34 @@
 
 matrix_bot_draupnir_enabled: true
 
-# renovate: datasource=docker depName=gnuxie/draupnir
-matrix_bot_draupnir_version: "v2.9.0"
+# renovate: datasource=docker depName=depName=ghcr.io/the-draupnir-project/draupnir
+matrix_bot_draupnir_version: "v3.1.0"
 
 matrix_bot_draupnir_container_image_self_build: false
 matrix_bot_draupnir_container_image_self_build_repo: "https://github.com/the-draupnir-project/Draupnir.git"
 
 matrix_bot_draupnir_container_image: "{{ matrix_bot_draupnir_container_image_registry_prefix }}{{ matrix_bot_draupnir_container_image_registry_namespace_identifier }}:{{ matrix_bot_draupnir_version }}"
-matrix_bot_draupnir_container_image_registry_namespace_identifier: "gnuxie/draupnir"
+matrix_bot_draupnir_container_image_registry_namespace_identifier: "the-draupnir-project/draupnir"
 matrix_bot_draupnir_container_image_registry_prefix: "{{ 'localhost/' if matrix_bot_draupnir_container_image_self_build else matrix_bot_draupnir_container_image_registry_prefix_upstream }}"
 matrix_bot_draupnir_container_image_registry_prefix_upstream: "{{ matrix_bot_draupnir_container_image_registry_prefix_upstream_default }}"
-matrix_bot_draupnir_container_image_registry_prefix_upstream_default: "docker.io/"
-matrix_bot_draupnir_container_image_force_pull: "{{ matrix_bot_draupnir_container_image.endswith(':latest') }}"
+matrix_bot_draupnir_container_image_registry_prefix_upstream_default: "ghcr.io/"
 
 matrix_bot_draupnir_base_path: "{{ matrix_base_data_path }}/draupnir"
 matrix_bot_draupnir_config_path: "{{ matrix_bot_draupnir_base_path }}/config"
 matrix_bot_draupnir_data_path: "{{ matrix_bot_draupnir_base_path }}/data"
 matrix_bot_draupnir_container_src_files_path: "{{ matrix_bot_draupnir_base_path }}/docker-src"
+
+# Rolling tag: true if version doesn't match semver shape (vX.Y.Z with optional prerelease/build), false otherwise.
+matrix_bot_draupnir_rolling_tag: "{{ not (matrix_bot_draupnir_version is match('^v[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$')) }}"
+
+# Force restart the service on all runs only when both roles are enabled, both roles
+# are using the same version string, and that version is a classified as a moving tag.
+matrix_bot_draupnir_force_restart: "{{
+  matrix_bot_draupnir_enabled | bool and
+  matrix_appservice_draupnir_for_all_enabled | bool and
+  matrix_bot_draupnir_version == matrix_appservice_draupnir_for_all_version and
+  matrix_bot_draupnir_rolling_tag | bool
+}}"
 
 matrix_bot_draupnir_config_web_enabled: "{{ matrix_bot_draupnir_config_web_abuseReporting or matrix_bot_draupnir_config_web_synapseHTTPAntispam_enabled }}"  # noqa var-naming
 
@@ -104,11 +115,35 @@ matrix_bot_draupnir_password: "{{ matrix_bot_draupnir_pantalaimon_password }}"
 # This configuration option does not follow the common naming schema as its not controlling a config key directly.
 matrix_bot_draupnir_login_native: false
 
-# The room ID where people can use the bot. The bot has no access controls, so
-# anyone in this room can use the bot - secure your room!
+# This controls whether Zero Touch Deployment is enabled.
+# When enabled, the playbook validates the settings and only
+# renders the configuration values Draupnir expects.
+# This prevents invalid manual combinations from being passed through, since
+# Draupnir requires `matrix_bot_draupnir_config_managementRoom` to be unset and
+# `matrix_bot_draupnir_config_initialManager` to be a valid MXID.
+# Zero Touch Deployment is recommended for all new deployments.
+# Deployments that are exempt from this recommendation are assumed to be
+# advanced setups with specific needs for non-zero-touch mode.
+# Note that enabling this on an existing deployment will cause the bot to
+# recreate the management room.
+# Recreating the management room will cause all protections to reset their settings to defaults
+# and cause the recreation of secondary rooms like notification rooms. All bot memory will also be wiped.
+matrix_bot_draupnir_zero_touch_deploy: false
+
+# The management room used for administration when Zero Touch
+# Deployment is disabled.
+# The bot has no access controls, so anyone in this room can use it - secure
+# your room!
 # This should be a room alias or room ID - not a matrix.to URL.
 # Note: Draupnir is fairly verbose - expect a lot of messages from it.
 matrix_bot_draupnir_config_managementRoom: ""  # noqa var-naming
+
+# The MXID invited as the initial manager when Zero Touch Deployment creates the
+# management room.
+# This value is mutually exclusive with
+# `matrix_bot_draupnir_config_managementRoom`, and the bot will crash if you
+# attempt to set both at the same time.
+matrix_bot_draupnir_config_initialManager: ""  # noqa var-naming
 
 # Endpoint URL that Draupnir uses to interact with the Matrix homeserver (client-server API).
 # Set this to the Pantalaimon URL if you're using that.

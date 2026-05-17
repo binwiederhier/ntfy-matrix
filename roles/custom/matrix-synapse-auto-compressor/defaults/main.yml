@@ -33,7 +33,6 @@ matrix_synapse_auto_compressor_container_image: "{{ matrix_synapse_auto_compress
 matrix_synapse_auto_compressor_container_image_registry_prefix: "{{ 'localhost/' if matrix_synapse_auto_compressor_container_image_self_build else matrix_synapse_auto_compressor_container_image_registry_prefix_upstream }}"
 matrix_synapse_auto_compressor_container_image_registry_prefix_upstream: "{{ matrix_synapse_auto_compressor_container_image_registry_prefix_upstream_default }}"
 matrix_synapse_auto_compressor_container_image_registry_prefix_upstream_default: "registry.gitlab.com/"
-matrix_synapse_auto_compressor_container_image_force_pull: "{{ matrix_synapse_auto_compressor_container_image.endswith(':latest') }}"
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 matrix_synapse_auto_compressor_container_network: matrix-synapse-auto-compressor

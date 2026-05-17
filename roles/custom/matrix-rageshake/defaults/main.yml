@@ -24,7 +24,7 @@ matrix_rageshake_path_prefix: /
 # There are no stable container image tags yet.
 # See: https://github.com/matrix-org/rageshake/issues/69
 # renovate: datasource=docker depName=ghcr.io/matrix-org/rageshake
-matrix_rageshake_version: 1.17.1
+matrix_rageshake_version: 1.18.0
 
 matrix_rageshake_base_path: "{{ matrix_base_data_path }}/rageshake"
 matrix_rageshake_config_path: "{{ matrix_rageshake_base_path }}/config"
@@ -35,7 +35,6 @@ matrix_rageshake_container_image: "{{ matrix_rageshake_container_image_registry_
 matrix_rageshake_container_image_registry_prefix: "{{ 'localhost/' if matrix_rageshake_container_image_self_build else matrix_rageshake_container_image_registry_prefix_upstream }}"
 matrix_rageshake_container_image_registry_prefix_upstream: "{{ matrix_rageshake_container_image_registry_prefix_upstream_default }}"
 matrix_rageshake_container_image_registry_prefix_upstream_default: "ghcr.io/"
-matrix_rageshake_container_image_force_pull: "{{ matrix_rageshake_container_image.endswith(':master') }}"
 matrix_rageshake_container_image_tag: "{{ matrix_rageshake_version }}"
 
 matrix_rageshake_container_image_self_build: false

@@ -88,6 +88,11 @@
 
     - {'old': 'matrix_synapse_container_image_customizations_s3_storage_provider_installation_old_boto_workaround_enabled', 'new': '<removed; see https://github.com/spantaleev/matrix-docker-ansible-deploy/issues/4637>'}
 
+    - {'old': 'matrix_synapse_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}
+    - {'old': 'matrix_s3_goofys_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}
+    - {'old': 'matrix_synapse_rust_synapse_compress_state_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}
+    - {'old': 'matrix_synapse_reverse_proxy_companion_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}
+
 - name: (Deprecation) Catch and report renamed settings in matrix_synapse_configuration_extension_yaml
   ansible.builtin.fail:
     msg: >-
@@ -210,7 +215,7 @@
 - name: Fail if OpenID Connect is enabled for Synapse when auth is delegated to Matrix Authentication Service
   ansible.builtin.fail:
     msg: "When Synapse is delegating authentication to Matrix Authentication Service (`matrix_synapse_matrix_authentication_service_enabled: true`), it doesn't make sense to enable OpenID Connect (`matrix_synapse_oidc_enabled: true`), because it is not Synapse that is handling authentication. Synapse will refuse to start otherwise."
-  when: matrix_synapse_matrix_authentication_service_enabled and matrix_synapse_oidc_enabled
+  when: matrix_synapse_matrix_authentication_service_enabled and matrix_synapse_oidc_enabled and not matrix_authentication_service_migration_in_progress
 
 - name: Fail if CAS config is enabled for Synapse when auth is delegated to Matrix Authentication Service
   ansible.builtin.fail:

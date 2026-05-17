@@ -31,14 +31,12 @@
   register: matrix_ldap_registration_proxy_git_pull_results
 
 - name: Ensure matrix_ldap_registration_proxy Docker image is built
-  community.docker.docker_image:
+  community.docker.docker_image_build:
     name: "{{ matrix_ldap_registration_proxy_container_image }}"
-    source: build
-    force_source: "{{ matrix_ldap_registration_proxy_git_pull_results.changed }}"
-    build:
-      dockerfile: Dockerfile
-      path: "{{ matrix_ldap_registration_proxy_container_src_files_path }}"
-      pull: true
+    dockerfile: Dockerfile
+    path: "{{ matrix_ldap_registration_proxy_container_src_files_path }}"
+    pull: true
+    rebuild: "{{ 'always' if matrix_ldap_registration_proxy_git_pull_results.changed | bool else 'never' }}"
   when: true
   register: matrix_ldap_registration_proxy_container_image_build_result
 

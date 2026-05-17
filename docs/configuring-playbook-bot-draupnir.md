@@ -1,4 +1,5 @@
 <!--
+SPDX-FileCopyrightText: 2023 - 2026 Catalan Lover <catalanlover@protonmail.com>
 SPDX-FileCopyrightText: 2023 - 2025 MDAD project contributors
 SPDX-FileCopyrightText: 2023 Kim Brose
 SPDX-FileCopyrightText: 2024 - 2025 Slavi Pantaleev
@@ -19,7 +20,17 @@ If your migrating from [Mjolnir](configuring-playbook-bot-mjolnir.md), skip to [
 
 ## Prerequisites
 
-### Create a management room
+### Prerequisites for Zero Touch Deployment (recommended)
+
+As of Draupnir 3.1.0, Zero Touch Deployment of Draupnir bot mode requires you to supply the following:
+
+- MXID of the first person who gets invited to the management room that the bot creates for you.
+- A permanent access token for authentication. Instructions for obtaining one can be found at [obtain an access token via curl](obtaining-access-tokens.md#obtain-an-access-token-via-curl).
+- A user account for Draupnir.
+
+Zero Touch Deployment is the officially preferred installation method for new deployments of Draupnir as of 3.1.0.
+
+### Create a management room (optional)
 
 Using your own account, create a new invite only room that you will use to manage the bot. This is the room where you will see the status of the bot and where you will send commands to the bot, such as the command to ban a user from another room.
 
@@ -27,6 +38,8 @@ Using your own account, create a new invite only room that you will use to manag
 > Anyone in this room can control the bot so it is important that you only invite trusted users to this room.
 
 It is possible to make the management room encrypted (E2EE). If doing so, then you need to enable the native E2EE support (see [below](#native-e2ee-support)).
+
+E2EE support for the management room is mutually exclusive with Zero Touch Deployment of Draupnir.
 
 Once you have created the room you need to copy the room ID so you can specify it on your `inventory/host_vars/matrix.example.com/vars.yml` file. In Element Web you can check the ID by going to the room's settings and clicking "Advanced". The room ID will look something like `!qporfwt:example.com`.
 
@@ -63,7 +76,25 @@ matrix_bot_draupnir_config_accessToken: "CLEAN_ACCESS_TOKEN_HERE"
 
 ## Adjusting the playbook configuration
 
-To enable the bot, add the following configuration to your `vars.yml` file. Make sure to replace `MANAGEMENT_ROOM_ID_HERE` with the one of the room which you have created earlier.
+### Configuration for Zero Touch Deployment (recommended)
+
+To enable the bot using Zero Touch Deployment, add the following configuration to your `vars.yml` file. Make sure to replace `INITIAL_MANAGER_MXID_HERE` with the MXID of the user who should be invited to the management room first, and `CLEAN_ACCESS_TOKEN_HERE` with the access token you obtained.
+
+```yaml
+# Enable Draupnir
+matrix_bot_draupnir_enabled: true
+
+matrix_bot_draupnir_zero_touch_deploy: true
+
+matrix_bot_draupnir_config_initialManager: "INITIAL_MANAGER_MXID_HERE"
+
+# Access token which the bot will use for logging in.
+matrix_bot_draupnir_config_accessToken: "CLEAN_ACCESS_TOKEN_HERE"
+```
+
+### Configuration without Zero Touch Deployment
+
+If you'd prefer to have the bot manage its own login at the cost of having to create the management room manually, you can use native login with the configuration block below. Make sure to replace `MANAGEMENT_ROOM_ID_HERE` with the ID of the management room you have created earlier.
 
 ```yaml
 # Enable Draupnir
@@ -82,7 +113,15 @@ matrix_bot_draupnir_login_native: true
 matrix_bot_draupnir_config_managementRoom: "MANAGEMENT_ROOM_ID_HERE"
 ```
 
-### Create and invite the bot to the management room
+### Running both bot mode and appservice mode
+
+When running both bot mode and [appservice mode (Draupnir for all)](./configuring-playbook-appservice-draupnir-for-all.md), the
+playbook will force-restart the bot if running a non-release tag like `latest` or `main` or a development build.
+This is due to the conditional restart logic not being able to reliably tell when an update happened.
+
+Conditional restarts work correctly for all tags when running only one of these two operating modes.
+
+### Create and invite the bot to the management room (only when using native login without Zero Touch Deployment)
 
 Before proceeding to the next step, run the playbook with the following command to create the bot user.
 
@@ -94,6 +133,12 @@ ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,ensure-matrix-use
 
 Then, invite the bot (`@bot.draupnir:example.com`) to its management room which you have created earlier.
 
+### Creating a user account for the bot (when using Zero Touch Deployment)
+
+Since Zero Touch Deployment is not validated with native login, you will need to create the user account manually.
+
+Refer to [registering users](registering-users.md) for documentation on how to configure the user account.
+
 ### Make sure the account is free from rate limiting (optional, recommended)
 
 If your homeserver's implementation is Synapse, you will need to prevent it from rate limiting the bot's account. **This is a highly recommended step. If you do not configure it, Draupnir performance will be degraded.**
@@ -102,11 +147,11 @@ This can be done using Synapse's [Admin APIs](https://element-hq.github.io/synap
 
 **Note**: access to the APIs is restricted with a valid access token, so exposing them publicly should not be a real security concern. Still, doing so is not recommended for additional security. See [official Synapse reverse-proxying recommendations](https://element-hq.github.io/synapse/latest/reverse_proxy.html#synapse-administration-endpoints).
 
-The APIs can also be accessed via [Synapse Admin](https://github.com/etkecc/synapse-admin), a web UI tool you can use to administrate users, rooms, media, etc. on your Matrix server. The playbook can install and configure Synapse Admin for you. For details about it, see [this page](configuring-playbook-synapse-admin.md).
+The APIs can also be accessed via [Ketesa](https://github.com/etkecc/ketesa), a web UI tool you can use to administrate users, rooms, media, etc. on your Matrix server. The playbook can install and configure Ketesa for you. For details about it, see [this page](configuring-playbook-ketesa.md).
 
 #### Add the configuration
 
-To expose the APIs publicly, add the following configuration to your `vars.yml` file:
+This is automatically done if Ketesa is enabled. Otherwise, to expose the APIs publicly, add the following configuration to your `vars.yml` file:
 
 ```yaml
 matrix_synapse_container_labels_public_client_synapse_admin_api_enabled: true
@@ -132,6 +177,7 @@ curl --header "Authorization: Bearer ADMIN_ACCESS_TOKEN_HERE" -X POST https://ma
 ```
 
 **Notes**:
+
 - This does not work on outdated Windows 10 as curl is not available there.
 - Even if the APIs are not exposed to the internet, you should still be able to run the command on the homeserver locally.
 
@@ -157,13 +203,14 @@ matrix_bot_draupnir_config_web_synapseHTTPAntispam_enabled: true
 matrix_bot_draupnir_admin_api_enabled: true
 ```
 
-These protections need to be manually activated and consulting the [enabling protections](#enabling-built-in-protections) guide can be helpful or consulting upstream documentation.
+These protections need to be manually activated. Consulting the [enabling protections](#enabling-built-in-protections) guide and/or upstream documentation can be helpful.
 
-<!--
-NOTE: this is unsupported by the playbook due to the admin API being inaccessible from containers currently.
+The other method polls a Synapse Admin API endpoint, hence it is available only if using Synapse and if the Draupnir user is an admin. To enable it, set `pollReports: true` in your `vars.yml` file as below:
 
-The other method polls an Synapse Admin API endpoint, hence it is available only if using Synapse and if the Draupnir user is an admin (see [above](#register-the-bot-account)). To enable it, set `pollReports: true` on `vars.yml` file as below.
--->
+```yaml
+matrix_bot_draupnir_configuration_extension_yaml: |
+  pollReports: true
+```
 
 ### Extending the configuration
 
@@ -212,7 +259,7 @@ ansible-playbook -i inventory/hosts setup.yml --tags=setup-all,ensure-matrix-use
 
   `just install-all` is useful for maintaining your setup quickly ([2x-5x faster](../CHANGELOG.md#2x-5x-performance-improvements-in-playbook-runtime) than `just setup-all`) when its components remain unchanged. If you adjust your `vars.yml` to remove other components, you'd need to run `just setup-all`, or these components will still remain installed.
 
-- If you change the bot password (`matrix_bot_draupnir_password` in your `vars.yml` file) subsequently, the bot user's credentials on the homeserver won't be updated automatically. If you'd like to change the bot user's password, use a tool like [synapse-admin](configuring-playbook-synapse-admin.md) to change it, and then update `matrix_bot_draupnir_password` to let the bot know its new password.
+- If you change the bot password (`matrix_bot_draupnir_password` in your `vars.yml` file) subsequently, the bot user's credentials on the homeserver won't be updated automatically. If you'd like to change the bot user's password, use a tool like [Ketesa](configuring-playbook-ketesa.md) to change it, and then update `matrix_bot_draupnir_password` to let the bot know its new password.
 
 ## Usage
 

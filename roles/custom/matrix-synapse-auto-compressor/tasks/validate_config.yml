@@ -15,6 +15,8 @@
       "new": "matrix_synapse_auto_compressor_schedule"
     - "old": "matrix_synapse_auto_compressor_container_image_name_prefix"
       "new": "matrix_synapse_auto_compressor_container_image_registry_prefix"
+    - "old": "matrix_synapse_auto_compressor_container_image_force_pull"
+      "new": "<removed> (the new community.docker.docker_image_pull module handles this natively)"
 
 - name: Fail if required matrix-synapse-auto-compressor settings not defined
   ansible.builtin.fail:

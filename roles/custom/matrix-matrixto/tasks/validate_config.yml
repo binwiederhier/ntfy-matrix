@@ -41,3 +41,11 @@
         msg: >-
           matrix_matrixto_container_labels_traefik_path_prefix (`{{ matrix_matrixto_container_labels_traefik_path_prefix }}`) must either be `/` or not end with a slash (e.g. `/matrixto`).
       when: "matrix_matrixto_container_labels_traefik_path_prefix != '/' and matrix_matrixto_container_labels_traefik_path_prefix[-1] == '/'"
+
+- name: (Deprecation) Catch and report renamed Matrix.to variables
+  ansible.builtin.fail:
+    msg: >-
+      The variable `{{ item.old }}` is deprecated. Please use `{{ item.new }}` instead.
+  when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
+  with_items:
+    - {'old': 'matrix_matrixto_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}

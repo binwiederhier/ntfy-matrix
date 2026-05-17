@@ -16,7 +16,7 @@ matrix_synapse_enabled: true
 matrix_synapse_github_org_and_repo: element-hq/synapse
 
 # renovate: datasource=docker depName=ghcr.io/element-hq/synapse
-matrix_synapse_version: v1.150.0
+matrix_synapse_version: v1.152.1
 
 matrix_synapse_username: ''
 matrix_synapse_uid: ''
@@ -86,7 +86,6 @@ matrix_synapse_container_image_customizations_dockerfile_body_custom: ''
 matrix_synapse_container_image: "{{ matrix_synapse_container_image_registry_prefix }}{{ matrix_synapse_container_image_name }}:{{ matrix_synapse_container_image_tag }}"
 matrix_synapse_container_image_name: "{{ matrix_synapse_github_org_and_repo }}"
 matrix_synapse_container_image_tag: "{{ matrix_synapse_version }}"
-matrix_synapse_container_image_force_pull: "{{ matrix_synapse_container_image.endswith(':latest') }}"
 matrix_synapse_container_image_registry_prefix: "{{ 'localhost/' if matrix_synapse_container_image_self_build else matrix_synapse_container_image_registry_prefix_upstream }}"
 matrix_synapse_container_image_registry_prefix_upstream: "{{ matrix_synapse_container_image_registry_prefix_upstream_default }}"
 matrix_synapse_container_image_registry_prefix_upstream_default: "ghcr.io/"
@@ -950,6 +949,7 @@ matrix_synapse_workers_presets:
     # Keep disabled by default: MSC4306/4308 thread subscriptions are unstable
     # and disabled in upstream Synapse unless explicitly opted in.
     stream_writer_thread_subscriptions_stream_workers_count: 0
+    stream_writer_quarantined_media_changes_stream_workers_count: 0
   one-of-each:
     room_workers_count: 0
     sync_workers_count: 0
@@ -973,6 +973,7 @@ matrix_synapse_workers_presets:
     # Keep disabled by default: MSC4306/4308 thread subscriptions are unstable
     # and disabled in upstream Synapse unless explicitly opted in.
     stream_writer_thread_subscriptions_stream_workers_count: 0
+    stream_writer_quarantined_media_changes_stream_workers_count: 1
   specialized-workers:
     room_workers_count: 1
     sync_workers_count: 1
@@ -996,6 +997,7 @@ matrix_synapse_workers_presets:
     # Keep disabled by default: MSC4306/4308 thread subscriptions are unstable
     # and disabled in upstream Synapse unless explicitly opted in.
     stream_writer_thread_subscriptions_stream_workers_count: 0
+    stream_writer_quarantined_media_changes_stream_workers_count: 1
 
 # Controls whether the matrix-synapse container exposes the various worker ports
 # (see `port` and `metrics_port` in `matrix_synapse_workers_enabled_list`) outside of the container.
@@ -1102,6 +1104,10 @@ matrix_synapse_workers_stream_writer_device_lists_stream_workers_count: "{{ matr
 # More than 1 worker is also supported of this type.
 matrix_synapse_workers_stream_writer_thread_subscriptions_stream_workers_count: "{{ matrix_synapse_workers_presets[matrix_synapse_workers_preset]['stream_writer_thread_subscriptions_stream_workers_count'] }}"
 
+# matrix_synapse_workers_stream_writer_quarantined_media_changes_stream_workers_count controls how many stream writers that handle the `quarantined_media_changes` stream to spawn.
+# More than 1 worker is also supported of this type.
+matrix_synapse_workers_stream_writer_quarantined_media_changes_stream_workers_count: "{{ matrix_synapse_workers_presets[matrix_synapse_workers_preset]['stream_writer_quarantined_media_changes_stream_workers_count'] }}"
+
 # A list of stream writer workers to enable. This list is built automatically based on other variables.
 # You're encouraged to enable/disable stream writer workers by setting `matrix_synapse_workers_stream_writer_*_stream_workers_count` variables, instead of adjusting this list manually.
 matrix_synapse_workers_stream_writers: |
@@ -1125,6 +1131,8 @@ matrix_synapse_workers_stream_writers: |
     ([{'stream': 'device_lists'}] * matrix_synapse_workers_stream_writer_device_lists_stream_workers_count | int)
     +
     ([{'stream': 'thread_subscriptions'}] * matrix_synapse_workers_stream_writer_thread_subscriptions_stream_workers_count | int)
+    +
+    ([{'stream': 'quarantined_media_changes'}] * matrix_synapse_workers_stream_writer_quarantined_media_changes_stream_workers_count | int)
   }}
 
 matrix_synapse_workers_stream_writers_container_arguments: []
@@ -1329,6 +1337,9 @@ matrix_synapse_database_host: ''
 matrix_synapse_database_port: 5432
 matrix_synapse_database_cp_min: 5
 matrix_synapse_database_cp_max: 10
+matrix_synapse_database_keepalives_idle: null
+matrix_synapse_database_keepalives_interval: null
+matrix_synapse_database_keepalives_count: null
 matrix_synapse_database_user: "synapse"
 matrix_synapse_database_password: ""
 matrix_synapse_database_database: "synapse"
@@ -1605,7 +1616,7 @@ matrix_synapse_ext_encryption_config_yaml: |
 # Enabling this will enable customizations and inject the appropriate Dockerfile clauses for installing synapse-s3-storage-provider.
 matrix_synapse_ext_synapse_s3_storage_provider_enabled: false
 # renovate: datasource=github-releases depName=matrix-org/synapse-s3-storage-provider
-matrix_synapse_ext_synapse_s3_storage_provider_version: 1.6.0
+matrix_synapse_ext_synapse_s3_storage_provider_version: 1.6.1
 # Controls whether media from this (local) server is stored in s3-storage-provider
 matrix_synapse_ext_synapse_s3_storage_provider_store_local: true
 # Controls whether media from remote servers is stored in s3-storage-provider
@@ -1658,7 +1669,6 @@ matrix_s3_goofys_container_image: "{{ matrix_s3_goofys_container_image_registry_
 matrix_s3_goofys_container_image_registry_prefix: "{{ matrix_s3_goofys_container_image_registry_prefix_upstream }}"
 matrix_s3_goofys_container_image_registry_prefix_upstream: "{{ matrix_s3_goofys_container_image_registry_prefix_upstream_default }}"
 matrix_s3_goofys_container_image_registry_prefix_upstream_default: "docker.io/"
-matrix_s3_goofys_container_image_force_pull: "{{ matrix_s3_goofys_container_image.endswith(':latest') }}"
 matrix_s3_media_store_custom_endpoint: "your-custom-endpoint"
 matrix_s3_media_store_bucket_name: "your-bucket-name"
 matrix_s3_media_store_aws_access_key: "your-aws-access-key"
@@ -1776,7 +1786,6 @@ matrix_synapse_rust_synapse_compress_state_container_image_version: v0.0.3
 matrix_synapse_rust_synapse_compress_state_container_image_registry_prefix: "{{ matrix_synapse_rust_synapse_compress_state_container_image_registry_prefix_upstream }}"
 matrix_synapse_rust_synapse_compress_state_container_image_registry_prefix_upstream: "{{ matrix_synapse_rust_synapse_compress_state_container_image_registry_prefix_upstream_default }}"
 matrix_synapse_rust_synapse_compress_state_container_image_registry_prefix_upstream_default: "registry.gitlab.com/"
-matrix_synapse_rust_synapse_compress_state_container_image_force_pull: "{{ matrix_synapse_rust_synapse_compress_state_container_image.endswith(':stable') or matrix_synapse_rust_synapse_compress_state_container_image.endswith(':latest') }}"
 
 matrix_synapse_rust_synapse_compress_state_base_path: "{{ matrix_base_data_path }}/rust-synapse-compress-state"
 matrix_synapse_rust_synapse_compress_state_synapse_compress_state_in_container_path: "/usr/local/bin/synapse_compress_state"
@@ -1835,7 +1844,7 @@ matrix_synapse_register_user_script_matrix_authentication_service_path: ""
 matrix_synapse_reverse_proxy_companion_enabled: "{{ matrix_synapse_enabled and matrix_synapse_workers_enabled }}"
 
 # renovate: datasource=docker depName=nginx
-matrix_synapse_reverse_proxy_companion_version: 1.29.7-alpine
+matrix_synapse_reverse_proxy_companion_version: 1.31.0-alpine
 
 matrix_synapse_reverse_proxy_companion_base_path: "{{ matrix_synapse_base_path }}/reverse-proxy-companion"
 matrix_synapse_reverse_proxy_companion_confd_path: "{{ matrix_synapse_reverse_proxy_companion_base_path }}/conf.d"
@@ -1858,7 +1867,6 @@ matrix_synapse_reverse_proxy_companion_container_image_registry_prefix: "{{ matr
 matrix_synapse_reverse_proxy_companion_container_image_registry_prefix_upstream: "{{ matrix_synapse_reverse_proxy_companion_container_image_registry_prefix_upstream_default }}"
 matrix_synapse_reverse_proxy_companion_container_image_registry_prefix_upstream_default: "docker.io/"
 matrix_synapse_reverse_proxy_companion_container_image_tag: "{{ matrix_synapse_reverse_proxy_companion_version }}"
-matrix_synapse_reverse_proxy_companion_container_image_force_pull: "{{ matrix_synapse_reverse_proxy_companion_container_image.endswith(':latest') }}"
 
 matrix_synapse_reverse_proxy_companion_container_network: "{{ matrix_synapse_container_network }}"
 
@@ -2102,6 +2110,7 @@ matrix_synapse_reverse_proxy_companion_synapse_stream_writer_presence_stream_wor
 matrix_synapse_reverse_proxy_companion_synapse_stream_writer_push_rules_stream_worker_client_server_locations: "{{ matrix_synapse_workers_stream_writer_push_rules_stream_worker_client_server_endpoints }}"
 matrix_synapse_reverse_proxy_companion_synapse_stream_writer_device_lists_stream_worker_client_server_locations: "{{ matrix_synapse_workers_stream_writer_device_lists_stream_worker_client_server_endpoints }}"
 matrix_synapse_reverse_proxy_companion_synapse_stream_writer_thread_subscriptions_stream_worker_client_server_locations: "{{ matrix_synapse_workers_stream_writer_thread_subscriptions_stream_worker_client_server_endpoints }}"
+matrix_synapse_reverse_proxy_companion_synapse_stream_writer_quarantined_media_changes_stream_worker_client_server_locations: "{{ matrix_synapse_workers_stream_writer_quarantined_media_changes_stream_worker_client_server_endpoints }}"
 matrix_synapse_reverse_proxy_companion_synapse_media_repository_locations: "{{ matrix_synapse_workers_media_repository_endpoints | default([]) }}"
 matrix_synapse_reverse_proxy_companion_synapse_user_dir_locations: "{{ matrix_synapse_workers_user_dir_worker_client_server_endpoints | default([]) }}"
 matrix_synapse_reverse_proxy_companion_client_server_main_override_locations_regex: ^/_matrix/client/(api/v1|r0|v3|unstable)/(account/3pid/|directory/list/room/|rooms/[^/]+/(forget|upgrade|report)|register)

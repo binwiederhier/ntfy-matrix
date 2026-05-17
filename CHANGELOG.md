@@ -1,3 +1,78 @@
+# 2026-05-07
+
+## Tuwunel support
+
+Thanks to [Jason Volk](https://github.com/jevolk), the playbook now supports the [Tuwunel](./docs/configuring-playbook-tuwunel.md) homeserver as an optional alternative to Synapse.
+
+Tuwunel is a fork of [conduwuit](./docs/configuring-playbook-conduwuit.md) written in Rust. The former conduwuit maintainer [endorses Tuwunel as conduwuit's successor](https://github.com/spantaleev/matrix-docker-ansible-deploy/pull/5200#issuecomment-4396211185). Like [Continuwuity](./docs/configuring-playbook-continuwuity.md), Tuwunel continues development on top of conduwuit's database format.
+
+Existing installations do **not** need to be updated. **Synapse is still the default homeserver implementation** installed by the playbook.
+
+People that used to run conduwuit may wish to [migrate from conduwuit to Tuwunel](./docs/configuring-playbook-tuwunel.md#migrating-from-conduwuit) via the new `tuwunel-migrate-from-conduwuit` tag, which performs an in-place binary-swap migration that reads the conduwuit database directly.
+
+**The homeserver implementation of an existing server cannot be changed** (e.g. from Synapse/Conduit/Dendrite/Continuwuity to Tuwunel) without data loss. The exception is conduwuit, due to the shared database format.
+
+
+# 2026-04-24
+
+## Support for bridging to Meshtastic via meshtastic-matrix-relay
+
+Thanks to [luschmar](https://github.com/luschmar), the playbook now supports bridging to [Meshtastic](https://meshtastic.org/) mesh networks via [meshtastic-matrix-relay](https://github.com/jeremiah-k/meshtastic-matrix-relay) (mmrelay).
+
+To learn more, see our [Setting up a Matrix <-> Meshtastic bridge](./docs/configuring-playbook-bridge-meshtastic-relay.md) documentation page.
+
+## (BC Break) mautrix-telegram has been rewritten in Go (bridgev2)
+
+The [mautrix-telegram](./docs/configuring-playbook-bridge-mautrix-telegram.md) bridge has been [rewritten in Go](https://mau.fi/blog/2026-04-mautrix-release/) on top of the [bridgev2](https://docs.mau.fi/bridges/go/) architecture. See the [upstream v26.04 release notes](https://github.com/mautrix/telegram/releases/tag/v0.2604.0) for what changed in the bridge itself (shared-portal behavior, management-room state, new features, etc.).
+
+**Most users won't have to do anything.** If you use the playbook's integrated Postgres (the default) and haven't customized telegram-bridge variables beyond `matrix_mautrix_telegram_api_id` and `matrix_mautrix_telegram_api_hash`, just re-run the playbook; the bridge will migrate itself on first start. Taking a backup beforehand is still a good idea.
+
+⚠️ **SQLite users: do not upgrade yet.** Upstream v0.2604.0 has a [known bug in the legacy SQLite migration](https://github.com/mautrix/telegram/releases/tag/v0.2604.0) that can corrupt your data. The playbook detects this case and will refuse to proceed. Either switch to Postgres first (set `matrix_mautrix_telegram_database_engine: postgres`; the playbook handles the pgloader migration), or wait for the next upstream release.
+
+Playbook-specific things to know. The playbook will fail loudly if you're affected:
+
+- Many `matrix_mautrix_telegram_*` variables have been **removed** (web-login endpoint, lottieconverter, username/alias/displayname templates, filter-mode, bot-token relaybot, Shared-Secret-Auth map). The deprecation check will tell you exactly what to rename or drop when you run the playbook.
+- **Old-style relaybot users** (`matrix_mautrix_telegram_bot_token`): switch to the common [mautrix bridge relay mode](./docs/configuring-playbook-bridge-mautrix-bridges.md#enable-relay-mode-optional) via `matrix_mautrix_telegram_bridge_relay_enabled: true`.
+- **Shared-Secret-Auth double-puppeting users**: switch to [Appservice Double Puppet](./docs/configuring-playbook-appservice-double-puppet.md); the playbook wires it up automatically.
+- **Custom `matrix_mautrix_telegram_bridge_permissions`**: map `relaybot` to `relay`, `puppeting` to `user`, `full` to `user`. Validated at playbook time.
+
+# 2026-04-03
+
+## (BC Break) Synapse Admin (fork by etke.cc) is now Ketesa
+
+Synapse Admin has been rebranded to **[Ketesa](https://github.com/etkecc/ketesa)** — a landmark release that introduces a new identity, a full UI redesign, mobile-first layout, and deep Matrix Authentication Service (MAS) integration. For the full story behind the rename and a tour of what's new, see the [Ketesa v1.0.0 announcement](https://etke.cc/blog/introducing-ketesa/).
+
+Ketesa is a zero-configuration drop-in replacement for Synapse Admin: no server-side changes required, just update the role variables.
+
+The `matrix-synapse-admin` role has been **renamed** to `matrix-ketesa`. All `matrix_synapse_admin_*` variables must be **renamed** to `matrix_ketesa_*` in your `vars.yml`.
+
+Additionally, the **Docker image** changed from `ghcr.io/etkecc/synapse-admin` to `ghcr.io/etkecc/ketesa`. The default path prefix remains `/synapse-admin` for backward compatibility — updating to `/ketesa` is recommended but not required.
+
+The playbook will automatically detect leftover `matrix_synapse_admin_*` variables and fail with a helpful message listing what needs to be renamed.
+
+The playbook handles reverse-proxy routing for subpath deployments (e.g. `/ketesa`), including MAS-enabled setups — though OIDC auth flows on real servers still have some rough edges. Feedback is appreciated in [#ketesa:etke.cc](https://matrix.to/#/#ketesa:etke.cc).
+
+See the [Ketesa documentation](docs/configuring-playbook-ketesa.md) for details.
+
+# 2026-04-02
+
+## (BC Break) Draupnir for all Self Service Provisioning is now disabled by default
+
+💡 If you don't use [Draupnir for all](./docs/configuring-playbook-appservice-draupnir-for-all.md), then this breaking change does not concern you..
+
+[Draupnir for all](./docs/configuring-playbook-appservice-draupnir-for-all.md) now ships with `allowSelfServiceProvisioning: false` as default upstream and in this playbook.
+
+This means users can no longer provision Draupnir instances by inviting the appservice bot unless you explicitly opt in.
+
+Manual provisioning by administrators is now the recommended approach. You do not want to enable Self Service Provisioning unless you have additional custom safeguards like those used by asgard.chat in place.
+
+If you want to enable Self Service Provisioning, add the following to your `vars.yml`:
+
+```yaml
+matrix_appservice_draupnir_for_all_configuration_extension_yaml: |
+  allowSelfServiceProvisioning: true
+```
+
 # 2026-03-23
 
 ## Migration validation system introduced

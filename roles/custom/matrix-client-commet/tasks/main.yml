@@ -11,6 +11,9 @@
     - install-client-commet
   block:
     - when: matrix_client_commet_enabled | bool
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/validate_config.yml"
+
+    - when: matrix_client_commet_enabled | bool
       ansible.builtin.include_tasks: "{{ role_path }}/tasks/setup_install.yml"
 
 - tags:

@@ -39,14 +39,12 @@ matrix_appservice_kakaotalk_node_container_image: "{{ matrix_appservice_kakaotal
 matrix_appservice_kakaotalk_node_container_image_registry_prefix: "{{ 'localhost/' if matrix_appservice_kakaotalk_container_image_self_build else matrix_appservice_kakaotalk_node_container_image_registry_prefix_upstream }}"
 matrix_appservice_kakaotalk_node_container_image_registry_prefix_upstream: "{{ matrix_appservice_kakaotalk_node_container_image_registry_prefix_upstream_default }}"
 matrix_appservice_kakaotalk_node_container_image_registry_prefix_upstream_default: ""
-matrix_appservice_kakaotalk_node_container_image_force_pull: "{{ matrix_appservice_kakaotalk_node_container_image.endswith(':latest') }}"
 
 matrix_appservice_kakaotalk_version: 86c038fd2ffee5e0aebf65136f085cce7e38b54e
 matrix_appservice_kakaotalk_container_image: "{{ matrix_appservice_kakaotalk_container_image_registry_prefix }}fair/matrix-appservice-kakaotalk:{{ matrix_appservice_kakaotalk_version }}"
 matrix_appservice_kakaotalk_container_image_registry_prefix: "{{ 'localhost/' if matrix_appservice_kakaotalk_container_image_self_build else matrix_appservice_kakaotalk_container_image_registry_prefix_upstream }}"
 matrix_appservice_kakaotalk_container_image_registry_prefix_upstream: "{{ matrix_appservice_kakaotalk_container_image_registry_prefix_upstream_default }}"
 matrix_appservice_kakaotalk_container_image_registry_prefix_upstream_default: ""
-matrix_appservice_kakaotalk_container_image_force_pull: "{{ matrix_appservice_kakaotalk_container_image.endswith(':latest') }}"
 
 matrix_appservice_kakaotalk_base_path: "{{ matrix_base_data_path }}/appservice-kakaotalk"
 matrix_appservice_kakaotalk_config_path: "{{ matrix_appservice_kakaotalk_base_path }}/config"
@@ -121,12 +119,10 @@ matrix_appservice_kakaotalk_database_name: 'matrix_appservice_kakaotalk'
 
 matrix_appservice_kakaotalk_database_connection_string: 'postgres://{{ matrix_appservice_kakaotalk_database_username }}:{{ matrix_appservice_kakaotalk_database_password }}@{{ matrix_appservice_kakaotalk_database_hostname }}:{{ matrix_appservice_kakaotalk_database_port }}/{{ matrix_appservice_kakaotalk_database_name }}'
 
-matrix_appservice_kakaotalk_appservice_database: "{{
-	{
-		'sqlite': ('sqlite:///' + matrix_appservice_kakaotalk_sqlite_database_path_in_container),
-		'postgres': matrix_appservice_kakaotalk_database_connection_string,
-	}[matrix_appservice_kakaotalk_database_engine]
-}}"
+matrix_appservice_kakaotalk_appservice_database: "{{ {
+    'sqlite': ('sqlite:///' + matrix_appservice_kakaotalk_sqlite_database_path_in_container),
+    'postgres': matrix_appservice_kakaotalk_database_connection_string,
+}[matrix_appservice_kakaotalk_database_engine] }}"
 
 
 # Can be set to enable automatic double-puppeting via Shared Secret Auth (https://github.com/devture/matrix-synapse-shared-secret-auth).

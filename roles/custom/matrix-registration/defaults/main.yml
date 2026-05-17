@@ -39,7 +39,6 @@ matrix_registration_container_image: "{{ matrix_registration_container_image_reg
 matrix_registration_container_image_registry_prefix: "{{ 'localhost/' if matrix_registration_container_image_self_build else matrix_registration_container_image_registry_prefix_upstream }}"
 matrix_registration_container_image_registry_prefix_upstream: "{{ matrix_registration_container_image_registry_prefix_upstream_default }}"
 matrix_registration_container_image_registry_prefix_upstream_default: "docker.io/"
-matrix_registration_container_image_force_pull: "{{ matrix_registration_container_image.endswith(':latest') }}"
 
 matrix_registration_container_network: ""
 
@@ -112,12 +111,10 @@ matrix_registration_database_connection_string: 'postgresql://{{ matrix_registra
 
 # For some reason, matrix-registraiton expects the `db` field to be like this: `sqlite:////data/db.sqlite3`.
 # (seems like one too many slashes, but..)
-matrix_registration_db: "{{
-	{
-		'sqlite': ('sqlite:///' + matrix_registration_sqlite_database_path_in_container),
-		'postgres': matrix_registration_database_connection_string,
-	}[matrix_registration_database_engine]
-}}"
+matrix_registration_db: "{{ {
+    'sqlite': ('sqlite:///' + matrix_registration_sqlite_database_path_in_container),
+    'postgres': matrix_registration_database_connection_string,
+}[matrix_registration_database_engine] }}"
 
 matrix_registration_base_url: "{{ matrix_registration_path_prefix }}"
 

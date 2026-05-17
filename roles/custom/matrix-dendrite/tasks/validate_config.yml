@@ -43,6 +43,7 @@
     - {'old': 'matrix_dendrite_docker_image_registry_prefix_upstream_default', 'new': 'matrix_dendrite_container_image_registry_prefix_upstream_default'}
     - {'old': 'matrix_dendrite_docker_image_tag', 'new': 'matrix_dendrite_container_image_tag'}
     - {'old': 'matrix_dendrite_docker_src_files_path', 'new': 'matrix_dendrite_container_src_files_path'}
+    - {'old': 'matrix_dendrite_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}
 
 - name: Fail if required Dendrite settings not defined
   ansible.builtin.fail:

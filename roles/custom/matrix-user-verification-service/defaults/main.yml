@@ -34,7 +34,6 @@ matrix_user_verification_service_container_image: "{{ matrix_user_verification_s
 matrix_user_verification_service_container_image_registry_prefix: "{{ 'localhost/' if matrix_user_verification_service_container_image_self_build else matrix_user_verification_service_container_image_registry_prefix_upstream }}"
 matrix_user_verification_service_container_image_registry_prefix_upstream: "{{ matrix_user_verification_service_container_image_registry_prefix_upstream_default }}"
 matrix_user_verification_service_container_image_registry_prefix_upstream_default: "docker.io/"
-matrix_user_verification_service_container_image_force_pull: "{{ matrix_user_verification_service_container_image.endswith(':latest') }}"
 
 # The base container network. It will be auto-created by this role if it doesn't exist already.
 matrix_user_verification_service_container_network: ""

@@ -30,7 +30,6 @@ matrix_media_repo_container_image_registry_prefix_upstream: "{{ matrix_media_rep
 matrix_media_repo_container_image_registry_prefix_upstream_default: "ghcr.io/"
 # renovate: datasource=docker depName=ghcr.io/t2bot/matrix-media-repo
 matrix_media_repo_container_image_tag: "v1.3.8"
-matrix_media_repo_container_image_force_pull: "{{ matrix_media_repo_container_image.endswith(':latest') }}"
 
 matrix_media_repo_base_path: "{{ matrix_base_data_path }}/{{ matrix_media_repo_identifier }}"
 matrix_media_repo_config_path: "{{ matrix_media_repo_base_path }}/config"

@@ -24,3 +24,11 @@
       Element Admin with a path prefix other than '/' is not supported yet.
       You have configured matrix_element_admin_path_prefix to '{{ matrix_element_admin_path_prefix }}'.
   when: "matrix_element_admin_path_prefix != '/'"
+
+- name: (Deprecation) Catch and report renamed Element Admin variables
+  ansible.builtin.fail:
+    msg: >-
+      The variable `{{ item.old }}` is deprecated. Please use `{{ item.new }}` instead.
+  when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
+  with_items:
+    - {'old': 'matrix_element_admin_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}

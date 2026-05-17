@@ -20,3 +20,11 @@
 
     - {'name': 'matrix_static_files_file_matrix_client_property_org_matrix_msc2965_authentication_issuer', when: "{{ matrix_static_files_file_matrix_client_property_org_matrix_msc2965_authentication_enabled and matrix_static_files_container_labels_base_domain_root_path_redirection_enabled }}"}
     - {'name': 'matrix_static_files_file_matrix_client_property_org_matrix_msc2965_authentication_account', when: "{{ matrix_static_files_file_matrix_client_property_org_matrix_msc2965_authentication_enabled and matrix_static_files_container_labels_base_domain_root_path_redirection_enabled }}"}
+
+- name: (Deprecation) Catch and report renamed matrix-static-files variables
+  ansible.builtin.fail:
+    msg: >-
+      The variable `{{ item.old }}` is deprecated. Please use `{{ item.new }}` instead.
+  when: "lookup('ansible.builtin.varnames', ('^' + item.old + '$'), wantlist=True) | length > 0"
+  with_items:
+    - {'old': 'matrix_static_files_container_image_force_pull', 'new': '<removed> (the new community.docker.docker_image_pull module handles this natively)'}

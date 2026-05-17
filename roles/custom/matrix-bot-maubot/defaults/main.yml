@@ -35,7 +35,6 @@ matrix_bot_maubot_container_image: "{{ matrix_bot_maubot_container_image_registr
 matrix_bot_maubot_container_image_registry_prefix: "{{ 'localhost/' if matrix_bot_maubot_container_image_self_build else matrix_bot_maubot_container_image_registry_prefix_upstream }}"
 matrix_bot_maubot_container_image_registry_prefix_upstream: "{{ matrix_bot_maubot_container_image_registry_prefix_upstream_default }}"
 matrix_bot_maubot_container_image_registry_prefix_upstream_default: "dock.mau.dev/"
-matrix_bot_maubot_container_image_force_pull: "{{ matrix_bot_maubot_container_image.endswith(':latest') }}"
 
 # matrix_bot_maubot_container_image_customized is the name of the locally built maubot image
 # which adds various customizations on top of the original (upstream) maubot image.
@@ -79,12 +78,10 @@ matrix_bot_maubot_database_sslmode: disable
 
 matrix_bot_maubot_database_connection_string: postgres://{{ matrix_bot_maubot_database_username }}:{{ matrix_bot_maubot_database_password }}@{{ matrix_bot_maubot_database_hostname }}:{{ matrix_bot_maubot_database_port }}/{{ matrix_bot_maubot_database_name }}?sslmode={{ matrix_bot_maubot_database_sslmode }}
 
-matrix_bot_maubot_database_uri: "{{
- 	{
- 		'sqlite': ('sqlite:///' + matrix_bot_maubot_sqlite_database_path_in_container),
- 		'postgres': matrix_bot_maubot_database_connection_string,
- 	}[matrix_bot_maubot_database_engine]
-    }}"
+matrix_bot_maubot_database_uri: "{{ {
+    'sqlite': ('sqlite:///' + matrix_bot_maubot_sqlite_database_path_in_container),
+    'postgres': matrix_bot_maubot_database_connection_string,
+}[matrix_bot_maubot_database_engine] }}"
 
 # Defines the port number where the management interface is
 # To actually expose the management interface outside of the container, use `matrix_bot_maubot_container_management_interface_http_bind_port`

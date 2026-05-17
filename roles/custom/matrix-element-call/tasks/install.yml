@@ -35,10 +35,9 @@
   register: matrix_element_call_support_files_result
 
 - name: Ensure Element Call container image is pulled
-  community.docker.docker_image:
+  community.docker.docker_image_pull:
     name: "{{ matrix_element_call_container_image }}"
-    source: pull
-    force_source: "{{ matrix_element_call_container_image_force_pull }}"
+    pull: always
   register: matrix_element_call_container_image_pull_result
   retries: "{{ devture_playbook_help_container_retries_count }}"
   delay: "{{ devture_playbook_help_container_retries_delay }}"

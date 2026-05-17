@@ -38,7 +38,6 @@ matrix_cactus_comments_container_image_registry_prefix: "{{ 'localhost/' if matr
 matrix_cactus_comments_container_image_registry_prefix_upstream: "{{ matrix_cactus_comments_container_image_registry_prefix_upstream_default }}"
 matrix_cactus_comments_container_image_registry_prefix_upstream_default: docker.io/
 matrix_cactus_comments_container_image_tag: "{{ matrix_cactus_comments_version }}"
-matrix_cactus_comments_container_image_force_pull: "{{ matrix_cactus_comments_container_image.endswith(':latest') }}"
 
 matrix_cactus_comments_container_network: ""
 

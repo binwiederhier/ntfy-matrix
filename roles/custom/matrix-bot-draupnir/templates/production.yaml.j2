@@ -1,6 +1,6 @@
 {#
 SPDX-FileCopyrightText: 2023 - 2024 MDAD project contributors
-SPDX-FileCopyrightText: 2023 - 2025 Catalan Lover <catalanlover@protonmail.com>
+SPDX-FileCopyrightText: 2023 - 2026 Catalan Lover <catalanlover@protonmail.com>
 SPDX-FileCopyrightText: 2024 Slavi Pantaleev
 SPDX-FileCopyrightText: 2024 Suguru Hirahara
 
@@ -63,6 +63,7 @@ autojoinOnlyIfManager: true
 # Whether Draupnir should report ignored invites to the management room (if autojoinOnlyIfManager is true).
 recordIgnoredInvites: false
 
+{% if not matrix_bot_draupnir_zero_touch_deploy %}
 # The room ID (or room alias) of the management room, anyone in this room can issue commands to Draupnir.
 #
 # Draupnir has no more granular access controls other than this, be sure you trust everyone in this room - secure it!
@@ -72,6 +73,13 @@ recordIgnoredInvites: false
 # Note: By default, Draupnir is fairly verbose - expect a lot of messages in this room.
 # (see verboseLogging to adjust this a bit.)
 managementRoom: {{ matrix_bot_draupnir_config_managementRoom | to_json }}
+{% endif %}
+
+{% if matrix_bot_draupnir_zero_touch_deploy %}
+# The initial manager to invite if the management room has to be created.
+# Leave this commented out when using a pre-existing management room.
+initialManager: {{ matrix_bot_draupnir_config_initialManager | to_json }}
+{% endif %}
 
 # The log level of terminal (or container) output,
 # can be one of DEBUG, INFO, WARN and ERROR, in increasing order of importance and severity.
@@ -147,6 +155,13 @@ commands:
   # the !draupnir prefix. For example, "my_moderator_bot: ban @spammer:example.org"
   # will address only my_moderator_bot.
   allowNoPrefix: false
+
+  # Controls which symbol will prefix a secondary prefix that is described in additionalPrefixes.
+  # For example the `!` in `!draupnir`.
+  # If you wish the bot to use "slash commands" with the "/" character instead of the exclamation mark "!" change the value to `"/"` and the bot will start responding to slash commands.
+
+  symbolPrefixes:
+    - "!"
 
   # Any additional bot prefixes that Draupnir will listen to. i.e. adding `mod` will allow `!mod help`.
   additionalPrefixes:
