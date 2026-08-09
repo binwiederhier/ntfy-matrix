@@ -140,14 +140,15 @@ The S3 backend ships with native multipart upload, so no goofys/rclone sidecar i
 
 ### RocksDB and cache tuning
 
-Tuwunel embeds RocksDB. The defaults (`rocksdb_compression_algo: zstd`) suit most deployments. For high-throughput servers you may want to enable direct I/O, raise parallelism, and bump the cache modifier:
+Tuwunel embeds RocksDB. The defaults (`rocksdb_compression_algo: zstd`) suit most deployments. For high-throughput servers you may want to enable direct I/O, raise parallelism, and configure a backup path:
 
 ```yaml
 matrix_tuwunel_config_rocksdb_direct_io: true
 matrix_tuwunel_config_rocksdb_parallelism_threads: 8
-matrix_tuwunel_config_cache_capacity_modifier: 2.0
 matrix_tuwunel_config_database_backup_path: /var/lib/tuwunel/backups
 ```
+
+`matrix_tuwunel_config_cache_capacity_modifier` is left empty by default, so Tuwunel picks a value (`1.0` since v1.7.0, with rebalanced per-cache sizes that already raise memory use). Set it to `2.0` only on small hosts with four or fewer cores; on larger machines the default is recommended.
 
 If you run on ZFS, the [Tuwunel maintenance guide](https://matrix-construct.github.io/tuwunel/maintenance.html#zfs) lists the dataset properties (`recordsize`, `primarycache`, `compression`, `atime`, `logbias`) and config flags (`rocksdb_direct_io`, `rocksdb_allow_fallocate`) you need to adjust to avoid severe write amplification.
 
@@ -178,6 +179,33 @@ When enabled, rooms with a valid `m.room.policy` state event have outgoing event
 ### Default room version
 
 The role sets `default_room_version: '12'`, so newly created rooms default to Matrix [room version 12](https://github.com/matrix-org/matrix-spec-proposals/pull/4289) ("Hydra"). Override `matrix_tuwunel_config_default_room_version` if you need an earlier version for client compatibility.
+
+### The `/_tuwunel` API path
+
+Besides `/_matrix`, Tuwunel serves its own first-party routes under `/_tuwunel`. This namespace carries ad-hoc endpoints such as `/_tuwunel/server_version` and `/_tuwunel/local_user_count`, and the [native OpenID Connect provider](https://matrix-construct.github.io/tuwunel/authentication/oidc-server.html) endpoints (`/_tuwunel/oidc/...`) that clients use when Tuwunel handles OIDC login itself, rather than delegating to an upstream provider as described above. The role routes `/_tuwunel` on the public entrypoint by default so these features work out of the box.
+
+To keep this namespace off the public entrypoint and expose it only on the internal one, set:
+
+```yaml
+matrix_tuwunel_container_labels_public_tuwunel_api_enabled: false
+matrix_tuwunel_container_labels_internal_tuwunel_api_enabled: true
+```
+
+### Exposing the Administration API
+
+Tuwunel serves a Synapse-compatible Administration API under the `/_synapse/admin` path, so administration dashboards (such as synapse-admin and ketesa) and moderation bots (such as Draupnir and Meowlnir) work against it. The served endpoints are listed on the [Tuwunel Synapse Admin API page](https://matrix-construct.github.io/tuwunel/development/compliance/synapse-admin.html).
+
+The API is not routed through the reverse proxy by default. Every endpoint requires an administrator access token, but you may still prefer to keep it off the public entrypoint. To reach it only from trusted networks, expose it on the internal Traefik entrypoint:
+
+```yaml
+matrix_tuwunel_container_labels_internal_client_synapse_admin_api_enabled: true
+```
+
+To expose it publicly instead (for example, when a dashboard runs in the browser), set:
+
+```yaml
+matrix_tuwunel_container_labels_public_client_synapse_admin_api_enabled: true
+```
 
 ## Creating the first user account
 

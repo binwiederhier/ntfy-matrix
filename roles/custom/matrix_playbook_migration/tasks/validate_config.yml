@@ -188,7 +188,7 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_matrix_prometheus_postgres_exporter_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_matrix_prometheus_postgres_exporter_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_matrix_prometheus_postgres_exporter_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_backup_borg_migration_validation_enabled | bool
@@ -207,7 +207,7 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_backup_borg_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_backup_borg_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_backup_borg_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_grafana_migration_validation_enabled | bool
@@ -226,7 +226,7 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_grafana_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_grafana_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_grafana_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_ntfy_migration_validation_enabled | bool
@@ -245,7 +245,7 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_ntfy_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_ntfy_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_ntfy_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_redis_migration_validation_enabled | bool
@@ -264,16 +264,16 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_redis_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_redis_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_redis_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_redis_valkey_migration_validation_enabled | bool
   block:
     - ansible.builtin.set_fact:
-        matrix_playbook_migration_redis_migration_vars: |-
+        matrix_playbook_migration_redis_valkey_migration_vars: |-
           {{ lookup('ansible.builtin.varnames', '^redis_.+', wantlist=True) }}
 
-    - name: (Deprecation) Catch and report matrix_redis variables
+    - name: (Deprecation) Catch and report redis variables
       ansible.builtin.fail:
         msg: >-
           The Redis role that used to be part of this playbook has been superseded by https://github.com/mother-of-all-self-hosting/ansible-role-valkey.
@@ -282,8 +282,8 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_redis_migration_vars.keys() | join(', ') }}
-      when: "matrix_playbook_migration_redis_migration_vars | length > 0"
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_redis_valkey_migration_vars | join(', ') }}
+      when: "matrix_playbook_migration_redis_valkey_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_keydb_valkey_migration_validation_enabled | bool
   block:
@@ -291,7 +291,7 @@
         matrix_playbook_migration_keydb_migration_vars: |-
           {{ lookup('ansible.builtin.varnames', '^keydb_.+', wantlist=True) }}
 
-    - name: (Deprecation) Catch and report matrix_redis variables
+    - name: (Deprecation) Catch and report keydb variables
       ansible.builtin.fail:
         msg: >-
           The KeyDB role that used to be part of this playbook has been superseded by https://github.com/mother-of-all-self-hosting/ansible-role-valkey.
@@ -300,7 +300,7 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_keydb_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_keydb_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_keydb_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_etherpad_migration_validation_enabled | bool
@@ -319,7 +319,7 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_etherpad_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_etherpad_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_etherpad_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_aux_migration_validation_enabled | bool
@@ -338,7 +338,7 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_aux_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_aux_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_aux_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_jitsi_migration_validation_enabled | bool
@@ -357,10 +357,10 @@
 
           After renaming them, please do not forget to fetch the Ansible role. See docs/maintenance-upgrading-services.md for details about how to do so.
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_jitsi_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_jitsi_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_jitsi_migration_vars | length > 0"
 
-- when: matrix_playbook_migration_matrix_postmoogle_migration_validation_enabled | bool
+- when: matrix_playbook_migration_matrix_bridge_postmoogle_migration_validation_enabled | bool
   block:
     - ansible.builtin.set_fact:
         matrix_playbook_migration_postmoogle_migration_vars: |-
@@ -371,9 +371,9 @@
         msg: >-
           Your configuration contains a variable, which now has a different name.
 
-          Please rename all variables (`matrix_bot_postmoogle_` -> `matrix_postmoogle_`) on your configuration file (vars.yml).
+          Please rename all variables (`matrix_bot_postmoogle_` -> `matrix_bridge_postmoogle_`) on your configuration file (vars.yml).
 
-          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_postmoogle_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be renamed: {{ matrix_playbook_migration_postmoogle_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_postmoogle_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_nginx_proxy_elimination_variable_transition_checks_enabled | bool
@@ -479,7 +479,7 @@
 
           You should remove all its variables (`matrix_nginx_proxy_*`) from your configuration file (vars.yml).
 
-          The following variables in your configuration should be renamed: {{ matrix_playbook_migration_nginx_proxy_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be removed: {{ matrix_playbook_migration_nginx_proxy_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_nginx_proxy_migration_vars | length > 0"
 
 - when: matrix_playbook_migration_matrix_ssl_leftover_variable_checks_enabled | bool
@@ -495,7 +495,7 @@
 
           You should remove all its variables (`matrix_ssl_*`) from your configuration file (vars.yml).
 
-          The following variables in your configuration should be renamed: {{ matrix_playbook_migration_ssl_migration_vars.keys() | join(', ') }}
+          The following variables in your configuration need to be removed: {{ matrix_playbook_migration_ssl_migration_vars | join(', ') }}
       when: "matrix_playbook_migration_ssl_migration_vars | length > 0"
 
 - block:
@@ -503,10 +503,10 @@
         matrix_playbook_migration_matrix_synapse_container_labels_public_client_synapse_oidc_vars: |-
           {{ lookup('ansible.builtin.varnames', '^matrix_synapse_container_labels_public_client_synapse_oidc_.+', wantlist=True) }}
 
-    - name: (Deprecation) Catch and report matrix_ssl variables
+    - name: (Deprecation) Catch and report matrix_synapse_container_labels_public_client_synapse_oidc variables
       ansible.builtin.fail:
         msg: >-
-          We found usage of the following variables which are now removed: {{ matrix_playbook_migration_matrix_synapse_container_labels_public_client_synapse_oidc_vars.keys() | join(', ') }}
+          We found usage of the following variables which are now removed: {{ matrix_playbook_migration_matrix_synapse_container_labels_public_client_synapse_oidc_vars | join(', ') }}
       when: "matrix_playbook_migration_matrix_synapse_container_labels_public_client_synapse_oidc_vars | length > 0"
 
 - block:
@@ -514,10 +514,10 @@
         matrix_playbook_migration_matrix_synapse_reverse_proxy_companion_container_labels_public_client_synapse_oidc_vars: |-
           {{ lookup('ansible.builtin.varnames', '^matrix_synapse_reverse_proxy_companion_container_labels_public_client_synapse_oidc_.+', wantlist=True) }}
 
-    - name: (Deprecation) Catch and report matrix_ssl variables
+    - name: (Deprecation) Catch and report matrix_synapse_reverse_proxy_companion_container_labels_public_client_synapse_oidc variables
       ansible.builtin.fail:
         msg: >-
-          We found usage of the following variables which are now removed: {{ matrix_playbook_migration_matrix_synapse_reverse_proxy_companion_container_labels_public_client_synapse_oidc_vars.keys() | join(', ') }}
+          We found usage of the following variables which are now removed: {{ matrix_playbook_migration_matrix_synapse_reverse_proxy_companion_container_labels_public_client_synapse_oidc_vars | join(', ') }}
       when: "matrix_playbook_migration_matrix_synapse_reverse_proxy_companion_container_labels_public_client_synapse_oidc_vars | length > 0"
 
 - name: (Deprecation) Catch and report devture_postgres_backup variables
@@ -584,6 +584,18 @@
 
       The following variables in your configuration need to be renamed: {{ lookup('ansible.builtin.varnames', '^devture_container_socket_proxy_.+', wantlist=True) | join(', ') }}
   when: "lookup('ansible.builtin.varnames', '^devture_container_socket_proxy_.+', wantlist=True) | length > 0"
+
+- name: (Deprecation) Catch and report Go-NEB variables
+  ansible.builtin.fail:
+    msg: |-
+      Go-NEB was completely removed from the playbook in May 2026.
+
+      Please remove all `matrix_bot_go_neb_*` variables from your configuration file (vars.yml).
+
+      You may also wish to uninstall the bot manually. See `docs/configuring-playbook-bot-go-neb.md` for more information.
+
+      The following variables in your configuration need to be removed: {{ lookup('ansible.builtin.varnames', '^matrix_bot_go_neb_.+', wantlist=True) | join(', ') }}
+  when: "lookup('ansible.builtin.varnames', '^matrix_bot_go_neb_.+', wantlist=True) | length > 0"
 
 - name: (Deprecation) Catch and report ma1sd variables
   ansible.builtin.fail:
@@ -698,6 +710,42 @@
 
       The following variables in your configuration need to be renamed: {{ lookup('ansible.builtin.varnames', '^matrix_dynamic_dns_.+', wantlist=True) | join(', ') }}
   when: "lookup('ansible.builtin.varnames', '^matrix_dynamic_dns_.+', wantlist=True) | length > 0"
+
+- name: (Deprecation) Catch and report matrix-registration-bot variables
+  ansible.builtin.fail:
+    msg: |-
+      matrix-registration-bot was completely removed from the playbook in July 2026.
+
+      Please remove all `matrix_bot_matrix_registration_bot_*` variables from your configuration file (vars.yml).
+
+      You may also wish to uninstall the component manually. See `docs/configuring-playbook-bot-matrix-registration-bot.md` for more information.
+
+      The following variables in your configuration need to be removed: {{ lookup('ansible.builtin.varnames', '^matrix_bot_matrix_registration_bot_.+', wantlist=True) | join(', ') }}
+  when: "lookup('ansible.builtin.varnames', '^matrix_bot_matrix_registration_bot_.+', wantlist=True) | length > 0"
+
+- name: (Deprecation) Catch and report matrix-appservice-kakaotalk variables
+  ansible.builtin.fail:
+    msg: |-
+      matrix-appservice-kakaotalk was completely removed from the playbook in July 2026, because its upstream repository became unreachable and the component could only be installed by self-building it.
+
+      Please remove all `matrix_appservice_kakaotalk_*` variables from your configuration file (vars.yml).
+
+      You may also wish to uninstall the component manually. See `docs/configuring-playbook-bridge-appservice-kakaotalk.md` for more information.
+
+      The following variables in your configuration need to be removed: {{ lookup('ansible.builtin.varnames', '^matrix_appservice_kakaotalk_.+', wantlist=True) | join(', ') }}
+  when: "lookup('ansible.builtin.varnames', '^matrix_appservice_kakaotalk_.+', wantlist=True) | length > 0"
+
+- name: (Deprecation) Catch and report matrix-ldap-registration-proxy variables
+  ansible.builtin.fail:
+    msg: |-
+      matrix-ldap-registration-proxy was completely removed from the playbook in May 2026.
+
+      Please remove all `matrix_ldap_registration_proxy_*` variables from your configuration file (vars.yml).
+
+      You may also wish to uninstall the component manually. See `docs/configuring-playbook-matrix-ldap-registration-proxy.md` for more information.
+
+      The following variables in your configuration need to be removed: {{ lookup('ansible.builtin.varnames', '^matrix_ldap_registration_proxy_.+', wantlist=True) | join(', ') }}
+  when: "lookup('ansible.builtin.varnames', '^matrix_ldap_registration_proxy_.+', wantlist=True) | length > 0"
 
 - name: (Deprecation) Catch and report mautrix-facebook variables
   ansible.builtin.fail:
@@ -820,6 +868,18 @@
       The following variables in your configuration need to be removed: {{ lookup('ansible.builtin.varnames', '^matrix_go_skype_bridge_.+', wantlist=True) | join(', ') }}
   when: "lookup('ansible.builtin.varnames', '^matrix_go_skype_bridge_.+', wantlist=True) | length > 0"
 
+- name: (Deprecation) Catch and report matrix-registration variables
+  ansible.builtin.fail:
+    msg: |-
+      The matrix-registration service was completely removed from the playbook in May 2026.
+
+      Please remove all `matrix_registration_*` variables from your configuration file (vars.yml).
+
+      You may also wish to uninstall the component manually. See `docs/configuring-playbook-matrix-registration.md` for more information.
+
+      The following variables in your configuration need to be removed: {{ lookup('ansible.builtin.varnames', '^matrix_registration_.+', wantlist=True) | join(', ') }}
+  when: "lookup('ansible.builtin.varnames', '^matrix_registration_.+', wantlist=True) | length > 0"
+
 - name: (Deprecation) Catch and report the Sliding Sync proxy variables
   ansible.builtin.fail:
     msg: |-
@@ -863,3 +923,24 @@
   when:
     - matrix_playbook_migration_matrix_synapse_admin_ketesa_variable_transition_checks_enabled | bool
     - "lookup('ansible.builtin.varnames', '^matrix_synapse_admin_(enabled|base_path|config|container|hostname|path_prefix|http_|floc_|hsts_|restart_|systemd_)', wantlist=True) | length > 0"
+
+# In July 2026, all bridge roles (`roles/custom/matrix-bridge-*`) had their variable prefixes renamed to a uniform scheme,
+# where the variable prefix matches the role directory name (e.g. `matrix_mautrix_telegram_` -> `matrix_bridge_mautrix_telegram_`).
+# This catches all old-style prefixes at once and points people to the CHANGELOG, which contains the full rename map.
+# Prefixes of bridges removed from the playbook before this rename (e.g. `matrix_mautrix_facebook_`) are intentionally not matched here.
+# They are caught by their own dedicated tasks above, which ask for removal instead of renaming.
+- name: (Deprecation) Catch and report bridge variables that use pre-rename prefixes
+  ansible.builtin.fail:
+    msg: |-
+      Your configuration contains bridge variables which now have different names.
+
+      All bridge variables were renamed so that each variable prefix matches its role directory name (`matrix_bridge_*`).
+      For example, `matrix_mautrix_telegram_enabled` is now `matrix_bridge_mautrix_telegram_enabled`.
+
+      Please rename all such variables in your configuration file (vars.yml).
+      See the `Bridge variables have been renamed` entry in the CHANGELOG (https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/CHANGELOG.md) for the full rename map.
+
+      The following variables in your configuration need to be renamed: {{ lookup('ansible.builtin.varnames', '^matrix_(appservice_discord|appservice_irc|beeper_linkedin|heisenbridge|hookshot|mautrix_androidsms|mautrix_bluesky|mautrix_discord|mautrix_gmessages|mautrix_googlechat|mautrix_gvoice|mautrix_imessage|mautrix_meta_instagram|mautrix_meta_messenger|mautrix_signal|mautrix_slack|mautrix_telegram|mautrix_twitter|mautrix_whatsapp|mautrix_wsproxy|meshtastic_relay|mx_puppet_groupme|mx_puppet_steam|postmoogle|rustpush_bridge|sms_bridge|steam_bridge|wechat)_.+', wantlist=True) | join(', ') }}
+  when:
+    - matrix_playbook_migration_bridge_prefix_rename_validation_enabled | bool
+    - "lookup('ansible.builtin.varnames', '^matrix_(appservice_discord|appservice_irc|beeper_linkedin|heisenbridge|hookshot|mautrix_androidsms|mautrix_bluesky|mautrix_discord|mautrix_gmessages|mautrix_googlechat|mautrix_gvoice|mautrix_imessage|mautrix_meta_instagram|mautrix_meta_messenger|mautrix_signal|mautrix_slack|mautrix_telegram|mautrix_twitter|mautrix_whatsapp|mautrix_wsproxy|meshtastic_relay|mx_puppet_groupme|mx_puppet_steam|postmoogle|rustpush_bridge|sms_bridge|steam_bridge|wechat)_.+', wantlist=True) | length > 0"

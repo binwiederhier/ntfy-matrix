@@ -1,0 +1,51 @@
+{#
+SPDX-FileCopyrightText: 2026 MDAD project contributors
+SPDX-FileCopyrightText: 2026 Nikita Chernyi
+
+SPDX-License-Identifier: AGPL-3.0-or-later
+#}
+
+{% if matrix_bridge_mautrix_gvoice_container_labels_traefik_enabled %}
+traefik.enable=true
+
+{% if matrix_bridge_mautrix_gvoice_container_labels_traefik_docker_network %}
+traefik.docker.network={{ matrix_bridge_mautrix_gvoice_container_labels_traefik_docker_network }}
+{% endif %}
+
+{% if matrix_bridge_mautrix_gvoice_container_labels_exposure_enabled %}
+############################################################
+#                                                          #
+# Bridge API exposure                                      #
+#                                                          #
+############################################################
+
+traefik.http.services.matrix-mautrix-gvoice-exposure.loadbalancer.server.port=8080
+
+traefik.http.middlewares.matrix-mautrix-gvoice-exposure-strip-prefix.stripprefix.prefixes={{ matrix_bridge_mautrix_gvoice_exposure_path_prefix }}
+traefik.http.routers.matrix-mautrix-gvoice-exposure.middlewares=matrix-mautrix-gvoice-exposure-strip-prefix
+
+traefik.http.routers.matrix-mautrix-gvoice-exposure.rule={{ matrix_bridge_mautrix_gvoice_container_labels_exposure_traefik_rule }}
+
+{% if matrix_bridge_mautrix_gvoice_container_labels_exposure_traefik_priority | int > 0 %}
+traefik.http.routers.matrix-mautrix-gvoice-exposure.priority={{ matrix_bridge_mautrix_gvoice_container_labels_exposure_traefik_priority }}
+{% endif %}
+
+traefik.http.routers.matrix-mautrix-gvoice-exposure.service=matrix-mautrix-gvoice-exposure
+traefik.http.routers.matrix-mautrix-gvoice-exposure.entrypoints={{ matrix_bridge_mautrix_gvoice_container_labels_exposure_traefik_entrypoints }}
+
+traefik.http.routers.matrix-mautrix-gvoice-exposure.tls={{ matrix_bridge_mautrix_gvoice_container_labels_exposure_traefik_tls | to_json }}
+{% if matrix_bridge_mautrix_gvoice_container_labels_exposure_traefik_tls %}
+traefik.http.routers.matrix-mautrix-gvoice-exposure.tls.certResolver={{ matrix_bridge_mautrix_gvoice_container_labels_exposure_traefik_tls_certResolver }}
+{% endif %}
+
+############################################################
+#                                                          #
+# /Bridge API exposure                                     #
+#                                                          #
+############################################################
+{% endif %}
+
+
+{% endif %}
+
+{{ matrix_bridge_mautrix_gvoice_container_labels_additional_labels }}

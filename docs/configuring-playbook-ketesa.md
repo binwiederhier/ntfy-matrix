@@ -13,14 +13,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Setting up Ketesa (optional)
 
-The playbook can install and configure [Ketesa](https://github.com/etkecc/ketesa) for you.
+The playbook can install and configure [Ketesa](https://ketesa.app) ([source code](https://github.com/etkecc/ketesa)) for you.
 
 Ketesa is a fully-featured admin interface for Matrix homeservers — manage users, rooms, media, sessions, and more from one clean, responsive web UI. It is the evolution of [Awesome-Technologies/synapse-admin](https://github.com/Awesome-Technologies/synapse-admin): what began as a fork has grown into its own independent project with a redesigned interface, comprehensive Synapse and MAS API coverage, and multi-language support. See the [Ketesa v1.0.0 announcement](https://etke.cc/blog/introducing-ketesa/) for a full overview of what's new.
 
 >[!NOTE]
 >
 > - Ketesa does not work with other homeserver implementations than Synapse due to API's incompatibility.
-> - The latest version of Ketesa is hosted by [etke.cc](https://etke.cc/) at [admin.etke.cc](https://admin.etke.cc/). If you only need this service occasionally and trust giving your admin credentials to a 3rd party Single Page Application, you can consider using it from there and avoiding the (small) overhead of self-hosting.
+> - The latest version of Ketesa is hosted by [etke.cc](https://etke.cc/) at [cloud.ketesa.app](https://cloud.ketesa.app/). If you only need this service occasionally and trust giving your admin credentials to a 3rd party Single Page Application, you can consider using it from there and avoiding the (small) overhead of self-hosting.
 > - This playbook also supports an alternative management UI in the shape of [Element Admin](./configuring-playbook-element-admin.md). Please note that it's currently less feature-rich than Ketesa and requires [Matrix Authentication Service](./configuring-playbook-matrix-authentication-service.md).
 
 ## Adjusting DNS records (optional)
@@ -41,6 +41,7 @@ matrix_ketesa_enabled: true
 
 - for [Synapse](./configuring-playbook-synapse.md) (our default homeserver implementation): `matrix_synapse_container_labels_public_client_synapse_admin_api_enabled: true`
 - for [Dendrite](./configuring-playbook-dendrite.md): `matrix_dendrite_container_labels_public_client_synapse_admin_api_enabled: true`
+- for [Tuwunel](./configuring-playbook-tuwunel.md): `matrix_tuwunel_container_labels_public_client_synapse_admin_api_enabled: true`
 
 By default, Ketesa installation will be [restricted to only work with one homeserver](https://github.com/etkecc/ketesa/blob/main/README.md#restricting-available-homeserver) — the one managed by the playbook. To adjust these restrictions, tweak the `matrix_ketesa_config_restrictBaseUrl` variable.
 

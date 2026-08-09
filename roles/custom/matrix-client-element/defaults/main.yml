@@ -29,7 +29,7 @@ matrix_client_element_container_image_self_build_repo: "https://github.com/eleme
 matrix_client_element_container_image_self_build_low_memory_system_patch_enabled: "{{ ansible_facts['memtotal_mb'] < 4096 }}"
 
 # renovate: datasource=docker depName=ghcr.io/element-hq/element-web
-matrix_client_element_version: v1.12.18
+matrix_client_element_version: v1.12.25
 
 matrix_client_element_container_image: "{{ matrix_client_element_container_image_registry_prefix }}element-hq/element-web:{{ matrix_client_element_version }}"
 matrix_client_element_container_image_registry_prefix: "{{ 'localhost/' if matrix_client_element_container_image_self_build else matrix_client_element_container_image_registry_prefix_upstream }}"
@@ -38,6 +38,7 @@ matrix_client_element_container_image_registry_prefix_upstream_default: ghcr.io/
 
 matrix_client_element_data_path: "{{ matrix_base_data_path }}/client-element"
 matrix_client_element_container_src_files_path: "{{ matrix_client_element_data_path }}/docker-src"
+matrix_client_element_container_src_dockerfile_path: "{{ matrix_client_element_container_src_files_path }}/apps/web/Dockerfile"
 
 # The base container network
 matrix_client_element_container_network: ''
@@ -188,14 +189,9 @@ matrix_client_element_room_directory_servers: ['matrix.org']
 # Branding of Element
 matrix_client_element_brand: "Element"
 
-# URL to Logo on welcome page
+# URL to the logo shown on the welcome and login pages.
+# This is the default for `matrix_client_element_branding_auth_header_logo_url` below.
 matrix_client_element_welcome_logo: "themes/element/img/logos/element-logo.svg"
-
-# URL of link on welcome image
-matrix_client_element_welcome_logo_link: "https://element.io"
-
-matrix_client_element_welcome_headline: "_t(\"welcome_to_element\")"
-matrix_client_element_welcome_text: "_t(\"powered_by_matrix_with_logo\")"
 
 # Links, shown in footer of welcome page:
 # [{"text": "Link text", "url": "https://link.target"}, {"text": "Other link"}]
@@ -205,7 +201,7 @@ matrix_client_element_branding_auth_footer_links: ~  # noqa var-naming
 matrix_client_element_branding_auth_header_logo_url: "{{ matrix_client_element_welcome_logo }}"  # noqa var-naming
 
 # URL to Wallpaper, shown in background of welcome page
-matrix_client_element_branding_welcome_background_url: ~  # noqa var-naming
+matrix_client_element_branding_welcome_background_url: "themes/element/img/backgrounds/lake.jpg"
 
 # Controls the `features` section of the Element Web configuration.
 matrix_client_element_features: "{{ matrix_client_element_features_default | combine(matrix_client_element_features_auto, recursive=True) | combine(matrix_client_element_features_custom, recursive=True) }}"
@@ -267,8 +263,6 @@ matrix_client_element_element_call_brand: "Element Call"
 
 # Controls the `element_call.use_exclusively` setting in the Element Web configuration.
 matrix_client_element_element_call_use_exclusively: true
-
-matrix_client_element_page_template_welcome_path: "{{ role_path }}/templates/welcome.html.j2"
 
 # By default, there's no Element Web homepage (when logged in). If you wish to have one,
 # point this to a `home.html` template file on your local filesystem.
@@ -344,6 +338,10 @@ matrix_client_element_configuration: "{{ matrix_client_element_configuration_def
 # More info: https://element.io/blog/element-launches-e2ee-location-sharing/
 # How to host your own map tile server: https://matrix.org/docs/guides/map-tile-server
 matrix_client_element_location_sharing_enabled: false
+
+# Controls the value of the `Access-Control-Allow-Origin` header attached to responses for `map_style.json`.
+# Element Desktop loads the map style from a `vector://vector` origin, so cross-origin access needs to be allowed.
+matrix_client_element_location_sharing_map_style_access_control_allow_origin: "*"
 
 # Default Element location sharing map style configuration template which covers the generic use case.
 # You can customize it by controlling the various variables inside it.

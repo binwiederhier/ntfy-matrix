@@ -22,7 +22,7 @@ matrix_authentication_service_container_repo_version: "{{ 'main' if matrix_authe
 matrix_authentication_service_container_src_files_path: "{{ matrix_base_data_path }}/matrix-authentication-service/container-src"
 
 # renovate: datasource=docker depName=ghcr.io/element-hq/matrix-authentication-service
-matrix_authentication_service_version: 1.16.0
+matrix_authentication_service_version: 1.22.0
 matrix_authentication_service_container_image_registry_prefix: "{{ 'localhost/' if matrix_authentication_service_container_image_self_build else matrix_authentication_service_container_image_registry_prefix_upstream }}"
 matrix_authentication_service_container_image_registry_prefix_upstream: "{{ matrix_authentication_service_container_image_registry_prefix_upstream_default }}"
 matrix_authentication_service_container_image_registry_prefix_upstream_default: "ghcr.io/"
@@ -256,6 +256,33 @@ matrix_authentication_service_config_account_registration_token_required: false
 ########################################################################################
 #                                                                                      #
 # /Account configuration                                                               #
+#                                                                                      #
+########################################################################################
+
+
+########################################################################################
+#                                                                                      #
+# Captcha configuration                                                                #
+#                                                                                      #
+########################################################################################
+
+# Controls the `captcha.service` configuration setting.
+#
+# Which service to use for CAPTCHA protection of certain operations (like self-service password registration).
+# Valid values: recaptcha_v2, cloudflare_turnstile, hcaptcha
+# When defined, `matrix_authentication_service_config_captcha_site_key` and `matrix_authentication_service_config_captcha_secret_key` must be defined as well.
+# Leave empty to disable CAPTCHA protection.
+matrix_authentication_service_config_captcha_service: ""
+
+# Controls the `captcha.site_key` configuration setting.
+matrix_authentication_service_config_captcha_site_key: ""
+
+# Controls the `captcha.secret_key` configuration setting.
+matrix_authentication_service_config_captcha_secret_key: ""
+
+########################################################################################
+#                                                                                      #
+# /Captcha configuration                                                               #
 #                                                                                      #
 ########################################################################################
 

@@ -76,6 +76,8 @@ If your server and services experience issues, feel free to come to [our support
 
 - [Alternative architectures](alternative-architectures.md)
 
+- [Configuring Synology DSM](configuring-playbook-synology.md)
+
 - [Container images used by the playbook](container-images.md)
 
 - [Obtaining an Access Token](obtaining-access-tokens.md)
@@ -87,6 +89,8 @@ If your server and services experience issues, feel free to come to [our support
 - [Running `just` commands](just.md)
 
 - [Self-building](self-building.md)
+
+- [Style guide for playbook developers](style-guide.md)
 
 - [Uninstalling](uninstalling.md)
 

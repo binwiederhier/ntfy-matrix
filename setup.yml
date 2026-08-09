@@ -56,8 +56,8 @@
     - custom/matrix-alertmanager-receiver
     - custom/matrix-bridge-appservice-discord
     - custom/matrix-bridge-appservice-irc
-    - custom/matrix-bridge-appservice-kakaotalk
     - custom/matrix-bridge-beeper-linkedin
+    - custom/matrix-bridge-beeper-line
     - custom/matrix-bridge-wechat
     - custom/matrix-bridge-mautrix-twitter
     - custom/matrix-bridge-mautrix-googlechat
@@ -66,11 +66,14 @@
     - custom/matrix-bridge-mautrix-telegram
     - custom/matrix-bridge-mautrix-signal
     - custom/matrix-bridge-mautrix-gmessages
+    - custom/matrix-bridge-mautrix-gvoice
+    - custom/matrix-bridge-mautrix-linkedin
     - custom/matrix-bridge-mautrix-whatsapp
     - custom/matrix-bridge-mautrix-wsproxy
     - custom/matrix-bridge-mautrix-discord
     - custom/matrix-bridge-mautrix-slack
     - custom/matrix-bridge-mautrix-bluesky
+    - custom/matrix-bridge-rustpush
     - custom/matrix-bridge-mx-puppet-groupme
     - custom/matrix-bridge-mx-puppet-steam
     - custom/matrix-bridge-postmoogle
@@ -80,12 +83,10 @@
     - custom/matrix-bridge-hookshot
     - custom/matrix-bridge-meshtastic-relay
     - custom/matrix-bot-matrix-reminder-bot
-    - custom/matrix-bot-matrix-registration-bot
     - custom/matrix-bot-maubot
     - custom/matrix-bot-buscarron
     - custom/matrix-bot-baibot
     - custom/matrix-bot-honoroit
-    - custom/matrix-bot-go-neb
     - custom/matrix-bot-mjolnir
     - custom/matrix-bot-draupnir
     - custom/matrix-cactus-comments
@@ -106,7 +107,6 @@
     - galaxy/prometheus
     - galaxy/grafana
     - custom/matrix-prometheus-services-connect
-    - custom/matrix-registration
     - custom/matrix-client-element
     - custom/matrix-client-commet
     - galaxy/hydrogen
@@ -116,7 +116,6 @@
     - custom/matrix-client-fluffychat
     - galaxy/jitsi
     - custom/matrix-user-verification-service
-    - custom/matrix-ldap-registration-proxy
     - galaxy/etherpad
     - custom/matrix-sygnal
     - galaxy/ntfy

@@ -1,7 +1,8 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
-		"config:recommended"
+		"config:recommended",
+		"helpers:pinGitHubActionDigests"
 	],
 	"labels": [
 		"dependencies"
@@ -25,9 +26,34 @@
 				"https://github.com/devture/com.devture.ansible.role{/,}**",
 				"https://github.com/mother-of-all-self-hosting{/,}**"
 			]
+		},
+		{
+			"description": "mautrix images are dual-tagged (v0.YYMM.PATCH and vYY.MM[.PATCH]). Stick to the v0 scheme: it matches the git tags (needed for self-building) and has a consistent number of components (the calver tags do not, which makes Renovate stop offering updates).",
+			"matchPackageNames": [
+				"dock.mau.dev/mautrix/**"
+			],
+			"allowedVersions": "/^v0\\./"
+		},
+		{
+			"matchFileNames": [
+				".github/workflows/close-stale-issues.yml",
+				".github/workflows/lock-threads.yml",
+				".github/workflows/matrix.yml",
+				".github/workflows/update-translations.yml",
+				"flake.lock",
+				"i18n/requirements.txt",
+				"mise.toml"
+			],
+			"automerge": true
 		}
 	],
 	"pre-commit": {
 		"enabled": true
+	},
+	"nix": {
+		"enabled": true,
+		"lockFileMaintenance": {
+			"enabled": true
+		}
 	}
 }

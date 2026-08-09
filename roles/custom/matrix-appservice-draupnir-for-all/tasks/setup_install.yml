@@ -35,6 +35,16 @@
   delay: "{{ devture_playbook_help_container_retries_delay }}"
   until: matrix_appservice_draupnir_for_all_container_image_pull_result is not failed
 
+# A checkout owned by a different user (a uid change, an earlier clone by another user, etc.) would make the git task below fail on ownership or permissions.
+- name: Ensure Draupnir repository ownership is correct on self-build
+  ansible.builtin.file:
+    path: "{{ matrix_appservice_draupnir_for_all_container_src_files_path }}"
+    state: directory
+    owner: "{{ matrix_user_name }}"
+    group: "{{ matrix_group_name }}"
+    recurse: true
+  when: "matrix_appservice_draupnir_for_all_container_image_self_build | bool"
+
 - name: Ensure Draupnir repository is present on self-build
   ansible.builtin.git:
     repo: "{{ matrix_appservice_draupnir_for_all_container_image_self_build_repo }}"
@@ -88,6 +98,7 @@
   register: matrix_appservice_draupnir_for_all_registration_config_result
 
 - name: Ensure matrix-appservice-draupnir-for-all container network is created
+  when: matrix_appservice_draupnir_for_all_container_network != 'host'
   community.general.docker_network:
     enable_ipv6: "{{ devture_systemd_docker_base_ipv6_enabled }}"
     name: "{{ matrix_appservice_draupnir_for_all_container_network }}"

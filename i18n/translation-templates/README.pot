@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: matrix-docker-ansible-deploy \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-07 11:16+0000\n"
+"POT-Creation-Date: 2026-08-01 17:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,7 @@ msgid "🎯 Purpose"
 msgstr ""
 
 #: ../../../README.md:7
-msgid "This [Ansible](https://www.ansible.com/) playbook is meant to help you run your own [Matrix](http://matrix.org/) homeserver, along with the [various services](#supported-services) related to that."
+msgid "This [Ansible](https://www.ansible.com/) playbook is meant to help you run your own [Matrix](http://matrix.org/) homeserver, along with the [various services](#-supported-services) related to that."
 msgstr ""
 
 #: ../../../README.md:9
@@ -257,7 +257,7 @@ msgid "[Link](docs/configuring-playbook-client-cinny.md)"
 msgstr ""
 
 #: ../../../README.md:0
-msgid "[Sable](https://github.com/7w1/sable)"
+msgid "[Sable](https://github.com/SableClient/Sable)"
 msgstr ""
 
 #: ../../../README.md:0
@@ -288,11 +288,23 @@ msgstr ""
 msgid "[Link](docs/configuring-playbook-client-fluffychat-web.md)"
 msgstr ""
 
-#: ../../../README.md:72
+#: ../../../README.md:0
+msgid "[Commet](https://github.com/commetchat/commet)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "Matrix web client"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "[Link](docs/configuring-playbook-client-commet.md)"
+msgstr ""
+
+#: ../../../README.md:73
 msgid "Server Components"
 msgstr ""
 
-#: ../../../README.md:74
+#: ../../../README.md:75
 msgid "Services that run on the server to make the various parts of your installation work."
 msgstr ""
 
@@ -380,11 +392,11 @@ msgstr ""
 msgid "[Link](docs/configuring-playbook-matrix-rtc.md)"
 msgstr ""
 
-#: ../../../README.md:86
+#: ../../../README.md:87
 msgid "Authentication"
 msgstr ""
 
-#: ../../../README.md:88
+#: ../../../README.md:89
 msgid "Extend and modify how users are authenticated on your homeserver."
 msgstr ""
 
@@ -425,30 +437,6 @@ msgid "[Link](docs/configuring-playbook-ldap-auth.md)"
 msgstr ""
 
 #: ../../../README.md:0
-msgid "[matrix-ldap-registration-proxy](https://gitlab.com/activism.international/matrix_ldap_registration_proxy) (advanced)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "Proxy that handles Matrix registration requests and forwards them to LDAP"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "[Link](docs/configuring-playbook-matrix-ldap-registration-proxy.md)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "[matrix-registration](https://github.com/ZerataX/matrix-registration)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "Simple python application to have a token based Matrix registration"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "[Link](docs/configuring-playbook-matrix-registration.md)"
-msgstr ""
-
-#: ../../../README.md:0
 msgid "[Matrix User Verification Service](https://github.com/matrix-org/matrix-user-verification-service)"
 msgstr ""
 
@@ -472,11 +460,11 @@ msgstr ""
 msgid "[Link](docs/configuring-playbook-synapse-simple-antispam.md)"
 msgstr ""
 
-#: ../../../README.md:100
+#: ../../../README.md:99
 msgid "File Storage"
 msgstr ""
 
-#: ../../../README.md:102
+#: ../../../README.md:101
 msgid "Use alternative file storage to the default `media_store` folder."
 msgstr ""
 
@@ -512,11 +500,11 @@ msgstr ""
 msgid "[Link](docs/configuring-playbook-matrix-media-repo.md)"
 msgstr ""
 
-#: ../../../README.md:110
+#: ../../../README.md:109
 msgid "Bridges"
 msgstr ""
 
-#: ../../../README.md:112
+#: ../../../README.md:111
 msgid "Bridges can be used to connect your Matrix installation with third-party communication networks."
 msgstr ""
 
@@ -569,6 +557,30 @@ msgid "[Link](docs/configuring-playbook-bridge-mautrix-gmessages.md)"
 msgstr ""
 
 #: ../../../README.md:0
+msgid "[mautrix-gvoice](https://github.com/mautrix/gvoice)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "Bridge to [Google Voice](https://voice.google.com/)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "[Link](docs/configuring-playbook-bridge-mautrix-gvoice.md)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "[mautrix-linkedin](https://github.com/mautrix/linkedin)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "Bridge to [LinkedIn](https://www.linkedin.com/)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "[Link](docs/configuring-playbook-bridge-mautrix-linkedin.md)"
+msgstr ""
+
+#: ../../../README.md:0
 msgid "[mautrix-whatsapp](https://github.com/mautrix/whatsapp)"
 msgstr ""
 
@@ -590,6 +602,18 @@ msgstr ""
 
 #: ../../../README.md:0
 msgid "[Link](docs/configuring-playbook-bridge-mautrix-wsproxy.md)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "[matrix-rustpush-bridge](https://github.com/jasonlaguidice/imessage)"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "Bridge to [iMessage](https://support.apple.com/messages) via Apple Push Notification service"
+msgstr ""
+
+#: ../../../README.md:0
+msgid "[Link](docs/configuring-playbook-bridge-rustpush.md)"
 msgstr ""
 
 #: ../../../README.md:0
@@ -629,7 +653,7 @@ msgid "[Link](docs/configuring-playbook-bridge-mautrix-googlechat.md)"
 msgstr ""
 
 #: ../../../README.md:0
-msgid "[mautrix-meta](https://github.com/mautrix/instagram)"
+msgid "[mautrix-meta](https://github.com/mautrix/meta)"
 msgstr ""
 
 #: ../../../README.md:0
@@ -653,15 +677,15 @@ msgid "[Link](docs/configuring-playbook-bridge-mautrix-signal.md)"
 msgstr ""
 
 #: ../../../README.md:0
-msgid "[beeper-linkedin](https://github.com/beeper/linkedin)"
+msgid "[beeper-line](https://github.com/beeper/line)"
 msgstr ""
 
 #: ../../../README.md:0
-msgid "Bridge to [LinkedIn](https://www.linkedin.com/)"
+msgid "Bridge to [LINE](https://line.me/)"
 msgstr ""
 
 #: ../../../README.md:0
-msgid "[Link](docs/configuring-playbook-bridge-beeper-linkedin.md)"
+msgid "[Link](docs/configuring-playbook-bridge-beeper-line.md)"
 msgstr ""
 
 #: ../../../README.md:0
@@ -674,18 +698,6 @@ msgstr ""
 
 #: ../../../README.md:0
 msgid "[Link](docs/configuring-playbook-bridge-appservice-irc.md)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "[matrix-appservice-kakaotalk](https://src.miscworks.net/fair/matrix-appservice-kakaotalk)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "Bridge to [Kakaotalk](https://www.kakaocorp.com/page/service/service/KakaoTalk?lang=ENG)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "[Link](docs/configuring-playbook-bridge-appservice-kakaotalk.md)"
 msgstr ""
 
 #: ../../../README.md:0
@@ -808,11 +820,11 @@ msgstr ""
 msgid "[Link](docs/configuring-playbook-bridge-postmoogle.md)"
 msgstr ""
 
-#: ../../../README.md:141
+#: ../../../README.md:142
 msgid "Bots"
 msgstr ""
 
-#: ../../../README.md:143
+#: ../../../README.md:144
 msgid "Bots provide various additional functionality to your installation."
 msgstr ""
 
@@ -838,18 +850,6 @@ msgstr ""
 
 #: ../../../README.md:0
 msgid "[Link](docs/configuring-playbook-bot-matrix-reminder-bot.md)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "[matrix-registration-bot](https://github.com/moan0s/matrix-registration-bot)"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "Bot for invitations by creating and managing registration tokens"
-msgstr ""
-
-#: ../../../README.md:0
-msgid "[Link](docs/configuring-playbook-bot-matrix-registration-bot.md)"
 msgstr ""
 
 #: ../../../README.md:0

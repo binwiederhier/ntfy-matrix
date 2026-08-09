@@ -8,7 +8,9 @@ SPDX-FileCopyrightText: 2024 - 2025 Suguru Hirahara
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-# Setting up Beeper Linkedin bridging (optional)
+# Setting up Beeper Linkedin bridging (optional, unmaintained)
+
+**Note**: this bridge is unmaintained. Its [upstream repository](https://github.com/beeper/linkedin) has been archived and has not seen a change since March 2025. For bridging to LinkedIn, consider using the [mautrix-linkedin](configuring-playbook-bridge-mautrix-linkedin.md) bridge instead, which is actively maintained and also supported by the playbook.
 
 The playbook can install and configure [beeper-linkedin](https://github.com/beeper/linkedin) for you, for bridging to [LinkedIn](https://www.linkedin.com/) Messaging. This bridge is based on the mautrix-python framework and can be configured in a similar way to the mautrix bridges.
 
@@ -29,7 +31,7 @@ See [this section](configuring-playbook-bridge-mautrix-bridges.md#set-up-double-
 To enable the bridge, add the following configuration to your `inventory/host_vars/matrix.example.com/vars.yml` file:
 
 ```yaml
-matrix_beeper_linkedin_enabled: true
+matrix_bridge_beeper_linkedin_enabled: true
 ```
 
 ### Extending the configuration
@@ -68,7 +70,7 @@ As with all other services, you can find the logs in [systemd-journald](https://
 The default logging level for this component is `WARNING`. If you want to increase the verbosity, add the following configuration to your `vars.yml` file and re-run the playbook:
 
 ```yaml
-matrix_beeper_linkedin_logging_level: DEBUG
+matrix_bridge_beeper_linkedin_logging_level: DEBUG
 ```
 
 ### Bridge asking for 2FA even if you don't have 2FA enabled

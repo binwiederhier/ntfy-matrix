@@ -13,15 +13,19 @@ prek_home := env("PREK_HOME", justfile_directory() / "var/prek")
 default:
     @{{ just_executable() }} --list --justfile "{{ justfile() }}"
 
+# Adds a new host to the inventory, creating the inventory files if necessary (e.g. `just add-inventory-host example.com 1.2.3.4`)
+add-inventory-host domain server_address:
+    @{{ justfile_directory() }}/bin/add-inventory-host.sh {{ quote(domain) }} {{ quote(server_address) }}
+
 # Pulls external Ansible roles
 roles:
     #!/usr/bin/env sh
     echo "[NOTE] This command just updates the roles, but if you want to update everything at once (playbook, roles, etc.) - use 'just update'"
     if [ -x "$(command -v agru)" ]; then
-    	agru
+        agru -no-tui
     else
-    	rm -rf roles/galaxy
-    	ansible-galaxy install -r requirements.yml -p roles/galaxy/ --force
+        rm -rf roles/galaxy
+        ansible-galaxy install -r requirements.yml -p roles/galaxy/ --force
     fi
 
 # Updates the playbook and installs the necessary Ansible roles pinned in requirements.yml. If a -u flag is passed, also updates the requirements.yml file with new role versions (if available)
@@ -29,7 +33,7 @@ update *flags: update-playbook-only
     #!/usr/bin/env sh
     if [ -x "$(command -v agru)" ]; then
         echo {{ if flags == "" { "Installing roles pinned in requirements.yml…" } else { if flags == "-u" { "Updating roles and pinning new versions in requirements.yml…" } else { "Unknown flags passed" } } }}
-        agru {{ flags }}
+        agru -no-tui {{ flags }}
     else
         echo "[NOTE] You are using the standard ansible-galaxy tool to install roles, which is slow and lacks other features. We recommend installing the 'agru' tool to speed up the process: https://github.com/etkecc/agru#where-to-get"
         echo "Installing roles…"

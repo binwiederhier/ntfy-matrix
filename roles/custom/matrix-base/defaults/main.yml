@@ -54,6 +54,15 @@ matrix_bridges_msc4190_enabled: "{{ matrix_authentication_service_enabled and ma
 # Global var for enabling bridge self-signing ( On supported bridges)
 matrix_bridges_self_sign_enabled: "{{ matrix_bridges_msc4190_enabled }}"
 
+# Global vars for exposing bridges' HTTP API publicly on the Matrix domain.
+# This is used by tools like mautrix-manager (https://github.com/mautrix/manager) to drive bridge login.
+# Each supported bridge's HTTP endpoint is exposed under `<path_prefix>/<bridge>` (e.g. `/bridges/gmessages`).
+# Requests are authenticated by the bridge itself (e.g. per-user Matrix access token for the provisioning API,
+# or the homeserver token for the appservice endpoints), not by us.
+matrix_bridges_exposure_enabled: true
+matrix_bridges_exposure_hostname: "{{ matrix_server_fqn_matrix }}"
+matrix_bridges_exposure_path_prefix: /bridges
+
 # Global var to enable/disable relay mode across all bridges with relay mode support
 matrix_bridges_relay_enabled: false
 
@@ -131,9 +140,6 @@ matrix_server_fqn_buscarron: "buscarron.{{ matrix_domain }}"
 # This is where you access the Etherpad (if enabled via etherpad_enabled; disabled by default).
 matrix_server_fqn_etherpad: "etherpad.{{ matrix_domain }}"
 
-# For use with Go-NEB! (github callback url for example)
-matrix_server_fqn_bot_go_neb: "goneb.{{ matrix_domain }}"
-
 # This is where you access Jitsi.
 matrix_server_fqn_jitsi: "jitsi.{{ matrix_domain }}"
 
@@ -197,6 +203,26 @@ matrix_group_system: true
 # To use a specific user/group ID, override these variables.
 matrix_user_uid: ~
 matrix_user_gid: ~
+
+# Controls Synology DSM-specific handling. `null` means autodetect (via /etc/synoinfo.conf).
+# Set to `true`/`false` to force.
+matrix_base_host_is_synology: ~
+
+# Password for the Matrix service account on Synology DSM.
+# Must be set to a non-empty value in your vars.yml when running on Synology.
+# The account is created as expired so the password cannot be used to log in.
+matrix_synology_user_password: ""
+
+# Version constraint for the requests Python package installed on Synology hosts.
+# requests >= 2.32 dropped the http+docker URL scheme used by the Docker SDK,
+# causing "Not supported URL scheme http+docker" errors. Installed into the
+# system Python interpreter (ansible_python_interpreter) on the remote host.
+matrix_base_synology_requests_version_constraint: "requests<2.32"
+
+# Synology volume that needs shared mount propagation so that Docker
+# bind-propagation=slave mounts (used by matrix-synapse for its media store)
+# work correctly. Defaults to /volume1 (DSM's default Docker storage volume).
+matrix_base_synology_volume_path: "/volume1"
 
 matrix_base_data_path: "/matrix"
 matrix_base_data_path_mode: "750"
